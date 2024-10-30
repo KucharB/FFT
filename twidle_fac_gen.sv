@@ -7,7 +7,7 @@
 // I will try to finish this project tomorrow
 // I hate Katowice for traffic
 // I hope, this things will not require too many changes
-// Good luck, have, i am going to play war thunder, drink some
+// Good luck, have fun, i am going to play war thunder, drink some
 // some alchol and go to sleep, bye :D
 // 
 ////////////////////////////////////////////
