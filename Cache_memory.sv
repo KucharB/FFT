@@ -1,20 +1,12 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Engineer: Bartłomiej Kucharek
 // 
 // Create Date: 23.11.2024 23:45:49
-// Design Name: 
 // Module Name: Cache_memory
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
+// Project Name: FFT
 // Description: 
 // 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
