@@ -1,20 +1,11 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Engineer: Bartłomiej Kucharek
 // 
 // Create Date: 23.11.2024 23:24:49
-// Design Name: 
 // Module Name: RAM
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
+// Project Name: FFT
+
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
