@@ -32,5 +32,7 @@ output logic [31:0] result
     always_comb begin
     interial_a = {16{a_val[15]},a_val};
     interial_b = {16{b_val[15]},b_val};
+
+    result = interial_a * interial_b;
     end
 endmodule
