@@ -23,12 +23,18 @@
 module Accumulation_unit(
     input [15:0] val_a,
     output logic [15:0] val_out,
-    input clk
+    input clk,
+    input ce,
+    input nrst
     );
     
     reg [16:0] accumulated_val;
     
     always_ff @(posedge clk) begin
+        if (!nrst) begin
+            accumulated_val = 0;
+        end
+        else if(ce)
         accumulated_val <= accumulated_val + val_a;
     end
     
