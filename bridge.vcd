@@ -1,0 +1,375 @@
+$date
+	Mon Dec  9 16:22:48 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	100ps
+$end
+$scope module axi_tb $end
+$scope module uut $end
+$var wire 2 ! current_state [1:0] $end
+$var wire 32 " i_ARDATA [31:0] $end
+$var wire 1 # i_ARVALID $end
+$var wire 1 $ i_AWREADY $end
+$var wire 1 % i_CALC_END $end
+$var wire 32 & i_DATA_FROM_RAM [31:0] $end
+$var wire 12 ' i_SAMPLES_NUMBER [11:0] $end
+$var wire 1 ( i_clk $end
+$var wire 1 ) i_rstn $end
+$var reg 12 * index_cnt [11:0] $end
+$var reg 2 + next_state [1:0] $end
+$var reg 2 , o_ARBURST [1:0] $end
+$var reg 1 - o_ARREADY $end
+$var reg 2 . o_AWBURST [1:0] $end
+$var reg 32 / o_AWDATA [31:0] $end
+$var reg 1 0 o_AWVALID $end
+$var reg 1 1 o_DATA_LOADED $end
+$var reg 1 2 o_READ_ram $end
+$var reg 12 3 o_SAMPLE_INDEX_ram [11:0] $end
+$var reg 32 4 o_SAMPLE_ram [31:0] $end
+$var reg 1 5 o_WRITE_ram $end
+$var reg 2 6 state [1:0] $end
+$var reg 1 7 cnt_clr $end
+$var reg 1 8 cnt_en $end
+$scope begin p_fsm_comb $end
+$upscope $end
+$scope begin p_fsm_sync $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+08
+07
+b0 6
+05
+bx 4
+bx 3
+02
+01
+00
+bx /
+bx .
+1-
+bx ,
+b0 +
+b0 *
+0)
+0(
+b0 '
+b0 &
+0%
+x$
+x#
+b0 "
+b0 !
+$end
+#50
+1-
+b10 &
+b1 "
+1(
+#100
+1)
+0(
+#150
+b1 +
+1-
+b100 &
+b10 "
+1#
+b1010 '
+1(
+#200
+0(
+#250
+18
+b11 4
+b0 3
+15
+b1 !
+b1 6
+1-
+b110 &
+b11 "
+1(
+#300
+0(
+#350
+b100 4
+b1 3
+18
+1-
+15
+b1 *
+b1000 &
+b100 "
+1(
+#400
+0(
+#450
+b101 4
+b10 3
+18
+1-
+15
+b10 *
+b1010 &
+b101 "
+1(
+#500
+0(
+#550
+b110 4
+b11 3
+18
+1-
+15
+b11 *
+b1100 &
+b110 "
+1(
+#600
+0(
+#650
+b111 4
+b100 3
+18
+1-
+15
+b100 *
+b1110 &
+b111 "
+1(
+#700
+0(
+#750
+b1000 4
+b101 3
+18
+1-
+15
+b101 *
+b10000 &
+b1000 "
+1(
+#800
+0(
+#850
+b1001 4
+b110 3
+18
+1-
+15
+b110 *
+b10010 &
+b1001 "
+1(
+#900
+0(
+#950
+b1010 4
+b111 3
+18
+1-
+15
+b111 *
+b10100 &
+b1010 "
+1(
+#1000
+0(
+#1050
+b1011 4
+b1000 3
+18
+1-
+15
+b1000 *
+b10110 &
+b1011 "
+1(
+#1100
+0(
+#1150
+17
+b11 +
+11
+b1100 4
+b1001 3
+08
+1-
+15
+b1001 *
+b11000 &
+b1100 "
+1$
+0#
+1(
+#1200
+0(
+#1250
+b10 +
+10
+b11 !
+b11 6
+bx 4
+bx 3
+07
+0-
+05
+01
+b0 *
+1%
+b11010 &
+b1101 "
+1(
+#1300
+0(
+#1350
+18
+b11100 /
+b0 3
+12
+b10 !
+b10 6
+10
+b11100 &
+b1110 "
+1(
+#1400
+0(
+#1450
+b11110 /
+b1 3
+18
+10
+12
+b1 *
+b11110 &
+b1111 "
+1(
+#1500
+0(
+#1550
+b100000 /
+b10 3
+18
+10
+12
+b10 *
+b100000 &
+b10000 "
+1(
+#1600
+0(
+#1650
+b100010 /
+b11 3
+18
+10
+12
+b11 *
+b100010 &
+b10001 "
+1(
+#1700
+0(
+#1750
+b100100 /
+b100 3
+18
+10
+12
+b100 *
+b100100 &
+b10010 "
+1(
+#1800
+0(
+#1850
+b100110 /
+b101 3
+18
+10
+12
+b101 *
+b100110 &
+b10011 "
+1(
+#1900
+0(
+#1950
+b101000 /
+b110 3
+18
+10
+12
+b110 *
+b101000 &
+b10100 "
+1(
+#2000
+0(
+#2050
+b101010 /
+b111 3
+18
+10
+12
+b111 *
+b101010 &
+b10101 "
+1(
+#2100
+0(
+#2150
+b101100 /
+b1000 3
+18
+10
+12
+b1000 *
+b101100 &
+b10110 "
+1(
+#2200
+0(
+#2250
+b0 +
+17
+b101110 /
+b1001 3
+08
+10
+12
+b1001 *
+b101110 &
+b10111 "
+1(
+#2300
+0(
+#2350
+1-
+b0 !
+b0 6
+08
+bx /
+bx 3
+07
+00
+02
+b0 *
+b110000 &
+b11000 "
+1(
+#2400
+0(
+#2450
+1-
+b110010 &
+b11001 "
+1(

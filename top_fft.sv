@@ -3,6 +3,7 @@
 `include "MUL_UNIT.sv"
 `include "Rounding_unit.sv"
 `include "Accumulation_unit.sv"
+`include "Axi_Bridge.sv"
 
 module top_fft#(parameter N = 4)(
     // AXI BUS
@@ -17,7 +18,8 @@ module top_fft#(parameter N = 4)(
 
     input [11:0] SAMP_NUMBER,
     input clk,
-    input MAC_RADIX
+    input MAC_RADIX,
+    input n_Reset
 );
 
 wire [11:0] RAM2CACHE_ADDRESS;
@@ -32,24 +34,9 @@ wire [31:0] MUL_REAL_RESULT;
 wire [31:0] MUL_IMAG_RESULT;
 wire [35:0] SEND_DATA;
 
-
-/*
-module Axi_Bridge #(
-  parameter DATA_WIDTH = 32
-)
-(
-  input i_clk, i_rst,
-  input [DATA_WIDTH-1:0] i_ARDATA, i_DATA_FROM_RAM,
-  input i_ARVALID, i_AWREADY, i_CALC_END,
-  input [11:0] i_SAMPLES_NUMBER,
-  output logic o_ARREADY, o_AWVALID, o_DATA_LOADED,
-  output logic [DATA_WIDTH-1:0] o_AWDATA, o_SAMPLE_ram,
-  output logic [1:0] o_AWBURST, o_ARBURST,
-  output logic [11:0] o_SAMPLE_INDEX_ram,
-  output logic o_WRITE_ram, o_READ_ram,
-  output bridge_fsm current_state
-);
-*/
+Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(ARDATA), .i_DATA_FROM_RAM(), .i_ARVALID(ARVALID), .i_AWREADY(AWREADY), .i_CALC_END(), .i_SAMPLES_NUMBER(SAMP_NUMBER),
+                 .o_ARREADY(ARREADY), .o_AWVALID(AWVALID), .o_DATA_LOADED(), .o_AWDATA(AWDATA), .o_SAMPLE_ram(), .o_AWBURST(AWBURST), .o_ARBURST(ARBURST), .o_SAMPLE_INDEX_ram(),
+                 .o_WRITE_ram(), .o_READ_ram());
 
 RAM ram1(.axi_data_in(o_DATA_LOADED), 
          .axi_adr_in(o_SAMPLE_INDEX_ram), 

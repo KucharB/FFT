@@ -4,7 +4,7 @@ module Axi_Bridge #(
   parameter DATA_WIDTH = 32
 )
 (
-  input i_clk, i_rst,
+  input i_clk, i_rstn,
   input [DATA_WIDTH-1:0] i_ARDATA, i_DATA_FROM_RAM,
   input i_ARVALID, i_AWREADY, i_CALC_END,
   input [11:0] i_SAMPLES_NUMBER,
@@ -21,8 +21,8 @@ logic [11:0] index_cnt;
 bit cnt_en, cnt_clr;
 
 // FSM
-always_ff @(posedge i_clk or posedge i_rst) begin : p_fsm_sync
-  if (i_rst) begin
+always_ff @(posedge i_clk or negedge i_rstn) begin : p_fsm_sync
+  if (~i_rstn) begin
     state <= bridge_IDLE;
     index_cnt <= '0;
   end
