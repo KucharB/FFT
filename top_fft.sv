@@ -4,6 +4,8 @@
 `include "Rounding_unit.sv"
 `include "Accumulation_unit.sv"
 `include "Axi_Bridge.sv"
+`include "counter.sv"
+`include "fsm.sv"
 
 module top_fft#(parameter N = 4)(
     // AXI BUS
@@ -33,33 +35,38 @@ wire [31:0] ACUMULATION_INPUT;
 wire [31:0] MUL_REAL_RESULT;
 wire [31:0] MUL_IMAG_RESULT;
 wire [35:0] SEND_DATA;
+wire [11:0] SEND_ADDR;
 
-Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(ARDATA), .i_DATA_FROM_RAM(), .i_ARVALID(ARVALID), .i_AWREADY(AWREADY), .i_CALC_END(), .i_SAMPLES_NUMBER(SAMP_NUMBER),
-                 .o_ARREADY(ARREADY), .o_AWVALID(AWVALID), .o_DATA_LOADED(), .o_AWDATA(AWDATA), .o_SAMPLE_ram(), .o_AWBURST(AWBURST), .o_ARBURST(ARBURST), .o_SAMPLE_INDEX_ram(),
-                 .o_WRITE_ram(), .o_READ_ram());
+wire [11:0] N_INDEX;
+wire LOAD_nCOMPUTE;
+
+Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(ARDATA), 
+        .i_DATA_FROM_RAM(), .i_ARVALID(ARVALID), .i_AWREADY(AWREADY), 
+        .i_CALC_END(), .i_SAMPLES_NUMBER(SAMP_NUMBER),
+        .o_ARREADY(ARREADY), .o_AWVALID(AWVALID), .o_DATA_LOADED(), 
+        .o_AWDATA(AWDATA), .o_SAMPLE_ram(), .o_AWBURST(AWBURST), 
+        .o_ARBURST(ARBURST), .o_SAMPLE_INDEX_ram(),
+        .o_WRITE_ram(), .o_READ_ram());
 
 RAM ram1(.axi_data_in(o_DATA_LOADED), 
          .axi_adr_in(o_SAMPLE_INDEX_ram), 
          .axi_write(o_WRITE_ram),
          .axi_read(o_READ_ram),
          .axi_data_out(i_DATA_FROM_RAM),
-         .cir_data_in(),
-         .cir_adr_in(READ_ADDDRESS),
+         .cir_data_in(SEND_DATA),
+         .cir_adr_in(SEND_ADDR),
+         .read_ram_to_cache(RAM2CACHE_ADDRESS)
          .cir_data_out(CACHE_DATA_IN),
-         .mode(), // '1' AXI write and read, load to cache, '0' Circiut write
+         .mode(LOAD_nCOMPUTE), // '1' AXI write and read, load to cache, '0' Circiut write
          .clk(clk));
-
-/*mux MUX(.a(RAM2CACHE_ADDRESS),
-        .b(READ_ADDDRESS),
-        .c(CACHE_ADDR));*/
 
 Cache_memory c_mem(
         .data_in(CACHE_DATA_IN),
-        .write_adr(READ_ADDDRESS),
-        .read_adr(),
+        .write_adr(RAM2CACHE_ADDRESS),
+        .read_adr(RAM2CACHE_ADDRESS),
         .read_data(CACHE_DATA_OUT),
         .clk(clk),
-        .write()
+        .write(LOAD_nCOMPUTE)
 );
 
 MUL_UNIT mul_real(
@@ -91,34 +98,37 @@ Accumulation_unit acumulation(
         .ce(),
         .nrst()
 );
+
+counter n_counter(
+        .clk(clk), 
+        .ce(), 
+        .nrst(), 
+        .max_val(SAMP_NUMBER), 
+        .o_data(N_INDEX), 
+        .over()
+);
+
+counter k_counter(
+        .clk(clk), 
+        .ce(), 
+        .nrst(), 
+        .max_val(SAMP_NUMBER), 
+        .o_data(), 
+        .over()
+);
+
+fsm finit_state(
+        .clk(clk),
+        .ce(),
+        .nrst(),
+        .sample_num(SAMP_NUMBER),
+        .resault_ready(),
+        .data_loaded(),
+        .calc_end(),
+        .load_nCompute(),
+        .read_adr(),
+        .count_en(),
+        .clear()
+);
+
 endmodule
-
-/*module counter(
-    input clk,
-    input ce,
-    input nrst,
-    input [11:0] max_val,
-    output logic [11:0] o_data,
-    output logic over
-)
-
-logic [11:0] coun_val;
-
-alwasys_ff @(posedge clk)
-begin
-if (!nrst) begin
-    coun_val <= 0;
-end
-else if (ce) begin
-    if(coun_val < max_val)
-    coun_val <= coun_val + 1;
-    else 
-    coun_val <= 0;
-end
-end
-
-always_comb begin
-    o_data = o_data
-    over = ((o_data == max_val) && ce);
-end
-endmodule*/

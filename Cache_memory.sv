@@ -29,6 +29,7 @@ always @(posedge clk) begin
 if(write)begin
     MEM[write_adr] <= data_in;
     end
+else
 read_data <= MEM[read_adr];
 end
 endmodule

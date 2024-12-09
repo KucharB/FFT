@@ -12,19 +12,21 @@
 
 
 module RAM(
-    input [15:0] axi_data_in,
-    input [11:0] axi_adr_in,
-    input axi_write,
-    input axi_read,
+    input logic [15:0] axi_data_in,
+    input logic [11:0] axi_adr_in,
+    input logic axi_write,
+    input logic axi_read,
     output logic [31:0] axi_data_out,
     
-    input [31:0] cir_data_in,
-    input [11:0] cir_adr_in,
+    input logic [31:0] cir_data_in,
+    input logic [11:0] cir_adr_in,
+
+    input logic [11:0] read_ram_to_cache,
     
     output logic [15:0] cir_data_out,
     
-    input mode,
-    input clk
+    input logic mode,
+    input logic clk
     );
  
  reg [31:0] MEM [0:4095];
@@ -33,7 +35,7 @@ module RAM(
     if(mode) begin
         if(axi_write)begin
            MEM[axi_adr_in] <= axi_data_in;
-           cir_data_out <= MEM[cir_adr_in];
+           cir_data_out <= MEM[read_ram_to_cache];
         end
         if(axi_read) axi_data_out <= MEM[axi_adr_in];
     end
