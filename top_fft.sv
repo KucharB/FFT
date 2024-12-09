@@ -33,14 +33,32 @@ wire [31:0] MUL_IMAG_RESULT;
 wire [35:0] SEND_DATA;
 
 
-RAM ram1(.axi_data_in(), 
-         .axi_adr_in(), 
-         .axi_write(),
-         .axi_read(),
-         .axi_data_out(),
+/*
+module Axi_Bridge #(
+  parameter DATA_WIDTH = 32
+)
+(
+  input i_clk, i_rst,
+  input [DATA_WIDTH-1:0] i_ARDATA, i_DATA_FROM_RAM,
+  input i_ARVALID, i_AWREADY, i_CALC_END,
+  input [11:0] i_SAMPLES_NUMBER,
+  output logic o_ARREADY, o_AWVALID, o_DATA_LOADED,
+  output logic [DATA_WIDTH-1:0] o_AWDATA, o_SAMPLE_ram,
+  output logic [1:0] o_AWBURST, o_ARBURST,
+  output logic [11:0] o_SAMPLE_INDEX_ram,
+  output logic o_WRITE_ram, o_READ_ram,
+  output bridge_fsm current_state
+);
+*/
+
+RAM ram1(.axi_data_in(o_DATA_LOADED), 
+         .axi_adr_in(o_SAMPLE_INDEX_ram), 
+         .axi_write(o_WRITE_ram),
+         .axi_read(o_READ_ram),
+         .axi_data_out(i_DATA_FROM_RAM),
          .cir_data_in(),
-         .cir_adr_in(),
-         .cir_data_out(),
+         .cir_adr_in(READ_ADDDRESS),
+         .cir_data_out(CACHE_DATA_IN),
          .mode(), // '1' AXI write and read, load to cache, '0' Circiut write
          .clk(clk));
 
