@@ -1,16 +1,3 @@
-////////////////////////////////////////////
-//
-// Dear diary, today is 30.10.2024 when i'am writing this is 21:53
-// I have been working on this project for 2 hours now
-// I have made some progress, but I still have a lot to do
-// My eys is closing right now
-// I will try to finish this project tomorrow
-// I hate Katowice for traffic
-// I hope, this things will not require too many changes
-// Good luck, have fun, i am going to play war thunder, drink
-// some alchol and go to sleep, bye :D
-// 
-////////////////////////////////////////////
 parameter  real pi = 3.14159265358979323846;
 
 module twidle_fac_gen #(

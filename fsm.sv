@@ -4,7 +4,6 @@ module fsm
     input logic ce,
     input logic nrst,
     input logic [11:0] sample_num,
-    input logic resault_ready,
     input logic data_loaded,
     input logic calc_end,
     input logic data_to_cache_loaded,

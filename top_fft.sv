@@ -20,7 +20,7 @@ module top_fft#(parameter N = 4)(
 
     input [11:0] SAMP_NUMBER,
     input clk,
-    input MAC_RADIX,
+    input MAC_nRADIX,
     input n_Reset
 );
 
@@ -39,6 +39,11 @@ wire [11:0] SEND_ADDR;
 
 wire [11:0] N_INDEX;
 wire LOAD_nCOMPUTE;
+wire CALC_END;
+wire counter_n_en;
+wire counter_k_en;
+wire counter_n_ovf;
+wire device_clear;
 
 Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(ARDATA), 
         .i_DATA_FROM_RAM(), .i_ARVALID(ARVALID), .i_AWREADY(AWREADY), 
@@ -58,7 +63,8 @@ RAM ram1(.axi_data_in(o_DATA_LOADED),
          .read_ram_to_cache(RAM2CACHE_ADDRESS)
          .cir_data_out(CACHE_DATA_IN),
          .mode(LOAD_nCOMPUTE), // '1' AXI write and read, load to cache, '0' Circiut write
-         .clk(clk));
+         .clk(clk)
+);
 
 Cache_memory c_mem(
         .data_in(CACHE_DATA_IN),
@@ -95,40 +101,40 @@ Accumulation_unit acumulation(
         .val_a(ACUMULATION_INPUT),
         .val_out(SEND_DATA),
         .clk(clk),
-        .ce(),
-        .nrst()
+        .ce(counter_k_en),
+        .nrst(device_clear)
 );
 
 counter n_counter(
         .clk(clk), 
-        .ce(), 
-        .nrst(), 
+        .ce(counter_n_en), 
+        .nrst(device_clear), 
         .max_val(SAMP_NUMBER), 
         .o_data(N_INDEX), 
-        .over()
+        .over(counter_n_ovf)
 );
 
 counter k_counter(
         .clk(clk), 
-        .ce(), 
-        .nrst(), 
+        .ce(counter_k_en & counter_n_ovf), 
+        .nrst(device_clear), 
         .max_val(SAMP_NUMBER), 
-        .o_data(), 
-        .over()
+        .o_data(SEND_ADDR), 
+        .over(CALC_END)
 );
 
 fsm finit_state(
         .clk(clk),
-        .ce(),
-        .nrst(),
+        .ce(MAC_nRADIX),
+        .nrst(n_Reset),
         .sample_num(SAMP_NUMBER),
-        .resault_ready(),
         .data_loaded(),
-        .calc_end(),
+        .calc_end(CALC_END),
         .load_nCompute(),
         .read_adr(),
-        .count_en(),
-        .clear()
+        .count_n_en(counter_n_en),
+        .count_k_en(counter_k_en),
+        .clear(device_clear)
 );
 
 endmodule
