@@ -7,6 +7,11 @@
 `include "counter.sv"
 `include "fsm.sv"
 
+/////////////////////////////////////////////////////////
+// Missing things:
+// - logic that choose appropriate twiddle factor
+// - Memory with 4096 twiddle's factors
+
 module top_fft#(parameter N = 4)(
     // AXI BUS
     input [31:0] ARDATA,
