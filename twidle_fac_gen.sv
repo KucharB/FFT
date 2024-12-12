@@ -1,9 +1,9 @@
 parameter  real pi = 3.14159265358979323846;
 
 module twidle_fac_gen #(
-    parameter N = 2,
+    parameter N = 4096,
     parameter LOG_N = $clog2(N/2),
-    parameter K = 9,
+    parameter K = 16,
     parameter file_name = N
 )   (
     input wire clk,
@@ -32,17 +32,28 @@ initial begin
 end    
 
 case (N)
-    4 : $writememb("04.mem", W);
-    8 : $writememb("08.mem", W);
-    16 : $writememb("16.mem", W);
-    32 : $writememb("32.mem", W);
+    default: $writememb({file_name, ".mem"}, W);
 endcase
 case (N)
-    4 : $readmemb("04.mem", W);
-    8 : $readmemb("08.mem", W);
-    16 :$ readmemb("16.mem", W);
-    32 :$ readmemb("32.mem", W);
+    default: $readmemb({file_name, ".mem"}, W);
 endcase
 end
+
+endmodule
+
+module tw_tb;
+
+logic clk;
+logic [11:0] i;
+logic [15:0] re;
+logic [15:0] im;
+
+twidle_fac_gen dut(.clk(clk), .i(i), .W_re(re), .W)im(im);
+
+initial begin
+    clk = 1'b0;
+end
+
+initial be
 
 endmodule

@@ -55,6 +55,7 @@ else if(ce)begin
             load_nCompute <= 1'b0;
             if(calc_end) begin
                 state <= IDLE;
+                load_nCompute <= 1'b1;
             end
     endcase
 end
