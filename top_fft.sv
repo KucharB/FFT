@@ -6,11 +6,11 @@
 `include "Axi_Bridge.sv"
 `include "counter.sv"
 `include "fsm.sv"
+`include "twidle_fac_gen.sv"
 
 /////////////////////////////////////////////////////////
 // Missing things:
-// - logic that choose appropriate twiddle factor
-// - Memory with 4096 twiddle's factors
+
 
 module top_fft#(parameter N = 4)(
     // AXI BUS
@@ -52,7 +52,7 @@ wire device_clear;
 
 Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(ARDATA), 
         .i_DATA_FROM_RAM(), .i_ARVALID(ARVALID), .i_AWREADY(AWREADY), 
-        .i_CALC_END(), .i_SAMPLES_NUMBER(SAMP_NUMBER),
+        .i_CALC_END(CALC_END), .i_SAMPLES_NUMBER(SAMP_NUMBER),
         .o_ARREADY(ARREADY), .o_AWVALID(AWVALID), .o_DATA_LOADED(), 
         .o_AWDATA(AWDATA), .o_SAMPLE_ram(), .o_AWBURST(AWBURST), 
         .o_ARBURST(ARBURST), .o_SAMPLE_INDEX_ram(),
@@ -142,4 +142,20 @@ fsm finit_state(
         .clear(device_clear)
 );
 
+twiddle_rom tw_gen(
+        .N(SAMP_NUMBER), 
+        .k_index(SEND_ADDR), 
+        .n_index(N_INDEX), 
+        .data({TW_VAL_REAL,TW_VAL_IMAG})
+);
+
 endmodule
+
+/*
+module twiddle_rom #(parameter WIDTH = 32, parameter DEPTH = 4096) (
+    input logic [11:0] N,
+    input logic [11:0] k_index,
+    input logic [11:0] n_index,
+    output logic [WIDTH-1:0]          data  // Data output
+);
+*/

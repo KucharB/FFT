@@ -3,9 +3,7 @@ module twiddle_rom #(parameter WIDTH = 32, parameter DEPTH = 4096) (
     input logic [11:0] N,
     input logic [11:0] k_index,
     input logic [11:0] n_index,
-
-
-    output logic [WIDTH-1:0]          data  // Data output
+    output logic [WIDTH-1:0] data  // Data output
 );
     logic [$clog2(DEPTH)-1:0] addr; // Address input
     // Memory array to store twiddle factors
