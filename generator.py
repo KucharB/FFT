@@ -1,6 +1,6 @@
 import numpy as np
 
-def generate_twiddle_factors(filename="twiddle_factors.hex", n=16, width=16):
+def generate_twiddle_factors(filename="twiddle_factors.hex", n=4096, width=16):
     """
     Generate a hex file containing twiddle factors in 2's complement format.
     
