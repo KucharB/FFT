@@ -49,7 +49,7 @@ module tb_twiddle_rom;
             #10; // Wait for a few time units
 
             // Display the result
-            $display("Address: %d, Data: %h", addr, data);
+            $display("Address: %d, Data_re: %b, Data_im = %b", addr, data[31:16], data[15:0]);
         end
 
         $display("Test completed.");
