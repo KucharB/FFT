@@ -1,88 +1,58 @@
-parameter real pi = 3.14159265358979323846;
-
-module twidle_fac_gen #(
-    parameter N = 4096,
-    parameter LOG_N = $clog2(N/2),
-    parameter K = 16,
-    parameter file_name = N
-) (
-    input wire clk,
-    input wire [LOG_N-1:0] i,
-    output logic signed [K-1:0] W_re,
-    output logic signed [K-1:0] W_im
+// ROM implementation with 4096 twiddle factors in 2's complement
+module twiddle_rom #(parameter WIDTH = 32, parameter DEPTH = 4096) (
+    input  logic [$clog2(DEPTH)-1:0] addr, // Address input
+    output logic [WIDTH-1:0]          data  // Data output
 );
 
-logic [2*K-1:0] W [0:N/2-1]; // Declare W array properly
+    // Memory array to store twiddle factors
+    logic [WIDTH-1:0] rom [0:DEPTH-1];
 
-// Output values are updated on clock edge
-always_ff @(posedge clk) begin
-    {W_re, W_im} <= W[i];
-end
-
-// Initialize W array and populate twiddle factors
-initial begin
-    real MAX = (2**(K-1)) - 1.0; // Proper parenthesis for arithmetic expressions
-    for (int idx = 0; idx < N/2; idx++) begin
-        real angle, rW_re, rW_im;
-        angle = -2 * pi * idx / N; // Correct calculation for angle
-        rW_re = MAX * $cos(angle); // Compute real part
-        rW_im = MAX * $sin(angle); // Compute imaginary part
-
-        // Saturate and convert to fixed-point logic
-        logic signed [K-1:0] tmp_W_re = (rW_re > MAX) ? MAX : (rW_re < -MAX) ? -MAX : $rtoi(rW_re);
-        logic signed [K-1:0] tmp_W_im = (rW_im > MAX) ? MAX : (rW_im < -MAX) ? -MAX : $rtoi(rW_im);
-
-        W[idx] = {tmp_W_re, tmp_W_im}; // Assign to W array
+    // Initialize the ROM with twiddle factors (precomputed values)
+    initial begin
+        $readmemh("twiddle_factors.hex", rom); // Load from hex file
     end
 
-    // Write the computed values to a memory file
-    $writememb({file_name, ".mem"}, W);
-
-    // Read the values back into W array (optional, for verification)
-    $readmemb({file_name, ".mem"}, W);
-end
+    // Read data based on address
+    always_comb begin
+        data = rom[addr];
+    end
 
 endmodule
 
+// Testbench for twiddle_rom
+module tb_twiddle_rom;
+    // Parameters
+    parameter WIDTH = 32;
+    parameter DEPTH = 4096;
 
+    // Signals
+    logic [$clog2(DEPTH)-1:0] addr;
+    logic [WIDTH-1:0] data;
 
-module tw_tb;
+    // DUT instantiation
+    twiddle_rom #(.WIDTH(WIDTH), .DEPTH(DEPTH)) dut (
+        .addr(addr),
+        .data(data)
+    );
 
-logic clk;
-logic [11:0] i; // LOG_N should be 12 for N=4096
-logic signed [15:0] re;
-logic signed [15:0] im;
+    // Testbench variables
+    int i;
 
-// Instantiate the twiddle factor generator
-twidle_fac_gen #(
-    .N(4096),
-    .LOG_N(12),
-    .K(16),
-    .file_name("twiddle")
-) dut (
-    .clk(clk),
-    .i(i),
-    .W_re(re),
-    .W_im(im)
-);
+    // Test procedure
+    initial begin
+        // Load the twiddle factors into the ROM (requires precomputed hex file)
+        $display("Starting twiddle_rom test...");
 
-initial begin
-    clk = 1'b0;
-    i = 0;
-    while (i < 2048) begin // Loop for half the points (N/2 twiddle factors)
-        @(posedge clk);
-        i++;
+        // Iterate through all addresses
+        for (i = 0; i < DEPTH; i++) begin
+            addr = i[$clog2(DEPTH)-1:0]; // Assign address
+            #10; // Wait for a few time units
+
+            // Display the result
+            $display("Address: %d, Data: %h", addr, data);
+        end
+
+        $display("Test completed.");
+        $finish;
     end
-    #10 $finish;
-end
-
-initial begin
-    forever #5 clk = ~clk; // Generate clock with period of 10 units
-end
-
-initial begin
-    $dumpfile("tw_gen.vcd");
-    $dumpvars(0, tw_tb); // Dump all variables in testbench
-end
-
 endmodule
