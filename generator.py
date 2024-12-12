@@ -10,8 +10,7 @@ def generate_twiddle_factors(filename="twiddle_factors.hex", n=16, width=16):
     - width: Bit-width of each factor (default 16-bit).
     """
     # Calculate scale factor for 2's complement representation
-    scale = 2**(width - 1)  # 2^(width-1) corresponds to the range -1 to +1
-    print(scale)
+    scale = 2**(width - 1) - 1  # 2^(width-1) - 1 corresponds to the range -1 to +1
 
     # Generate twiddle factors (real and imaginary parts)
     twiddle_factors = [
@@ -21,10 +20,15 @@ def generate_twiddle_factors(filename="twiddle_factors.hex", n=16, width=16):
     # Convert to fixed-point representation (2's complement)
     fixed_point_factors = []
     for factor in twiddle_factors:
-        real = int(np.round(factor.real * scale)) & 0xFFFF  # Real part as 2's complement
-        imag = int(np.round(factor.imag * scale)) & 0xFFFF  # Imaginary part as 2's complement
-        print(real)
-        
+        real = int(np.round(factor.real * scale))
+        imag = int(np.round(factor.imag * scale))
+
+        # Handle 2's complement conversion
+        if real < 0:
+            real = (1 << width) + real
+        if imag < 0:
+            imag = (1 << width) + imag
+
         # Store as two separate values
         fixed_point_factors.append((real, imag))
 
