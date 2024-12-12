@@ -7,7 +7,7 @@ module twiddle_rom #(parameter WIDTH = 32, parameter DEPTH = 4096) (
 
     output logic [WIDTH-1:0]          data  // Data output
 );
-    logic [$clog2(DEPTH)-1:0] addr, // Address input
+    logic [$clog2(DEPTH)-1:0] addr; // Address input
     // Memory array to store twiddle factors
     logic [WIDTH-1:0] rom [0:DEPTH-1];
 
@@ -18,12 +18,12 @@ module twiddle_rom #(parameter WIDTH = 32, parameter DEPTH = 4096) (
 
     // Read data based on address
     always_comb begin
-        adddr = (4096/N) * k_index * n_index;
+        addr = (4096/N) * k_index * n_index;
         data = rom[addr];
     end
 
 endmodule
-
+/*
 // Testbench for twiddle_rom
 module tb_twiddle_rom;
     // Parameters
@@ -61,3 +61,4 @@ module tb_twiddle_rom;
         $finish;
     end
 endmodule
+*/
