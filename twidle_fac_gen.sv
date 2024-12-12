@@ -23,7 +23,7 @@ endmodule
 module tb_twiddle_rom;
     // Parameters
     parameter WIDTH = 32;
-    parameter DEPTH = 4096;
+    parameter DEPTH = 16;
 
     // Signals
     logic [$clog2(DEPTH)-1:0] addr;
