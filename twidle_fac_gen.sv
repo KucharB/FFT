@@ -1,9 +1,13 @@
 // ROM implementation with 4096 twiddle factors in 2's complement
 module twiddle_rom #(parameter WIDTH = 32, parameter DEPTH = 4096) (
-    input  logic [$clog2(DEPTH)-1:0] addr, // Address input
+    input logic [11:0] N,
+    input logic [11:0] k_index,
+    input logic [11:0] n_index,
+
+
     output logic [WIDTH-1:0]          data  // Data output
 );
-
+    logic [$clog2(DEPTH)-1:0] addr, // Address input
     // Memory array to store twiddle factors
     logic [WIDTH-1:0] rom [0:DEPTH-1];
 
@@ -14,6 +18,7 @@ module twiddle_rom #(parameter WIDTH = 32, parameter DEPTH = 4096) (
 
     // Read data based on address
     always_comb begin
+        adddr = (4096/N) * k_index * n_index;
         data = rom[addr];
     end
 
