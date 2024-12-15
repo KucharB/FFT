@@ -31,7 +31,6 @@ module top_fft#(parameter N = 4)(
 
 wire [11:0] RAM2CACHE_ADDRESS;
 wire [11:0] READ_ADDDRESS;
-//wire [11:0] CACHE_ADDR;
 wire [15:0] CACHE_DATA_IN;
 wire [15:0] CACHE_DATA_OUT;
 wire [15:0] TW_VAL_REAL;
