@@ -71,7 +71,7 @@ RAM ram1(.axi_data_in(RAM_in_axi),
          .axi_data_out(i_DATA_FROM_RAM),
          .cir_data_in(SEND_DATA),
          .cir_adr_in(SEND_ADDR),
-         .read_ram_to_cache(RAM2CACHE_ADDRESS)
+         .read_ram_to_cache(RAM2CACHE_ADDRESS),
          .cir_data_out(CACHE_DATA_IN),
          .mode(l_nComp), // '1' AXI write and read, load to cache, '0' Circiut write
          .clk(clk)
