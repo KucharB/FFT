@@ -12,7 +12,7 @@ module Axi_Bridge #(
   output logic [DATA_WIDTH-1:0] o_AWDATA, o_SAMPLE_ram,
   output logic [1:0] o_AWBURST, o_ARBURST,
   output logic [11:0] o_SAMPLE_INDEX_ram,
-  output logic o_WRITE_ram, o_READ_ram,
+  output logic o_WRITE_ram, o_READ_ram
   //output bridge_fsm current_state
 );
 

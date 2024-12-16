@@ -26,6 +26,6 @@ module Rounding_unit(
     );
     
     always_comb begin
-        val_out <= (val_in >> 16);
+        val_out = (val_in >> 16);
     end
 endmodule

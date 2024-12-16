@@ -13,14 +13,16 @@
 
 module top_fft #(parameter N = 4)(
     // AXI BUS
-    input [31:0] ARDATA,
-    input ARVALID,
-    output logic ARREADY,
-    output logic [N:0] ARBURST,
-    output logic [31:0] AWDATA,
-    output logic AWVALID,
-    input logic AWREADY,
-    output logic [N:0] AWBURST,
+    input               [31:0]  RDATA,
+    input                       RVALID,
+    output logic                RREADY,
+    output logic        [N-1:0] RBURST,
+    output logic        [31:0]  WDATA,
+    output logic                WVALID,
+    input logic                 WREADY,
+    output logic        [N-1:0] WBURST,
+    input               [31:0]  AWADDR,
+    input               [31:0]  ARADDR,
 
     input [11:0] SAMP_NUMBER,
     input clk,
@@ -48,24 +50,23 @@ wire counter_n_ovf;
 wire device_clear;
 
 wire [15:0] RAM_in_axi;
+wire [31:0] DATA_FROM_RAM;
 wire [11:0] SAMPLE_INDEX_ram;
 wire READ_ram;
 wire WRITE_ram;
 wire LOADED_DATA;
 
-wire [31:0] DATA_FROM_RAM;
-
-Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(ARDATA), 
-        .i_DATA_FROM_RAM(DATA_FROM_RAM), .i_ARVALID(ARVALID), .i_AWREADY(AWREADY), 
+Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(RDATA), 
+        .i_DATA_FROM_RAM(DATA_FROM_RAM), .i_ARVALID(RVALID), .i_AWREADY(WREADY), 
         .i_CALC_END(CALC_END), .i_SAMPLES_NUMBER(SAMP_NUMBER),
-        .o_ARREADY(ARREADY), .o_AWVALID(AWVALID), .o_DATA_LOADED(LOADED_DATA), 
-        .o_AWDATA(AWDATA), .o_SAMPLE_ram(RAM_in_axi), .o_AWBURST(AWBURST), 
-        .o_ARBURST(ARBURST), .o_SAMPLE_INDEX_ram(SAMPLE_INDEX_ram),
+        .o_ARREADY(RREADY), .o_AWVALID(WVALID), .o_DATA_LOADED(LOADED_DATA), 
+        .o_AWDATA(WDATA), .o_SAMPLE_ram(RAM_in_axi), .o_AWBURST(WBURST), 
+        .o_ARBURST(RBURST), .o_SAMPLE_INDEX_ram(SAMPLE_INDEX_ram),
         .o_WRITE_ram(WRITE_ram), .o_READ_ram(READ_ram)
 );
 
 RAM ram1(.axi_data_in(RAM_in_axi), 
-         .axi_adr_in(o_SAMPLE_INDEX_ram), 
+         .axi_adr_in(SAMPLE_INDEX_ram), 
          .axi_write(WRITE_ram),
          .axi_read(READ_ram),
          .axi_data_out(DATA_FROM_RAM),
