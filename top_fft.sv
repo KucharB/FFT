@@ -39,7 +39,6 @@ wire [31:0] ACUMULATION_INPUT;
 wire [31:0] MUL_REAL_RESULT;
 wire [31:0] MUL_IMAG_RESULT;
 wire [31:0] SEND_DATA;
-wire [31:0] SEND_DATA;
 wire [11:0] SEND_ADDR;
 
 wire [11:0] N_INDEX;
@@ -57,8 +56,6 @@ wire READ_ram;
 wire WRITE_ram;
 wire LOADED_DATA;
 
-wire [31:0] DATA_FROM_RAM;
-
 Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(RDATA), 
         .i_DATA_FROM_RAM(DATA_FROM_RAM), .i_ARVALID(RVALID), .i_AWREADY(WREADY), 
         .i_CALC_END(CALC_END), .i_SAMPLES_NUMBER(SAMP_NUMBER),
@@ -72,7 +69,6 @@ RAM ram1(.axi_data_in(RAM_in_axi),
          .axi_adr_in(SAMPLE_INDEX_ram), 
          .axi_write(WRITE_ram),
          .axi_read(READ_ram),
-         .axi_data_out(DATA_FROM_RAM),
          .axi_data_out(DATA_FROM_RAM),
          .cir_data_in(SEND_DATA),
          .cir_adr_in(SEND_ADDR),
