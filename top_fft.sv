@@ -83,7 +83,7 @@ Cache_memory c_mem(
         .read_adr(N_INDEX),
         .read_data(CACHE_DATA_OUT),
         .clk(clk),
-        .write(l_nComp)
+        .write(!l_nComp)
 );
 
 MUL_UNIT mul_real(
