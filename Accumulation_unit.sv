@@ -21,19 +21,20 @@
 
 
 module Accumulation_unit(
-    input [15:0] val_a,
-    output logic [35:0] val_out,
+    input [31:0] val_a,
+    output logic [31:0] val_out,
     input clk,
     input ce,
     input nrst
     );
     
-    reg [16:0] accumulated_val_real;
-    reg [16:0] accumulated_val_imag
+    reg [15:0] accumulated_val_real;
+    reg [15:0] accumulated_val_imag;
     
     always_ff @(posedge clk) begin
         if (!nrst) begin
-            accumulated_val = 0;
+            accumulated_val_real <= 0;
+            accumulated_val_imag <= 0;
         end
         else if(ce) begin
         accumulated_val_real <= accumulated_val_real + val_a[31:16];
@@ -41,5 +42,5 @@ module Accumulation_unit(
         end
     end
     
-    always_comb val_out <= {accumulated_val_real, accumulated_val_imag}
+    always_comb val_out = {accumulated_val_real, accumulated_val_imag};
 endmodule
