@@ -1,18 +1,17 @@
-`include "RAM.sv"
-`include "mux.sv"
-`include "MUL_UNIT.sv"
-`include "Rounding_unit.sv"
-`include "Accumulation_unit.sv"
-`include "Axi_Bridge.sv"
-`include "counter.sv"
-`include "fsm.sv"
-`include "twidle_fac_gen.sv"
-
+//`include "RAM.sv"
+//`include "mux.sv"
+//`include "MUL_UNIT.sv"
+//`include "Rounding_unit.sv"
+//`include "Accumulation_unit.sv"
+//`include "Axi_Bridge.sv"
+//`include "counter.sv"
+//`include "fsm.sv"
+//`include "twidle_fac_gen.sv"
 /////////////////////////////////////////////////////////
 // Missing things:
 
 
-module top_fft#(parameter N = 4)(
+module top_fft #(parameter N = 4)(
     // AXI BUS
     input [31:0] ARDATA,
     input ARVALID,
@@ -158,5 +157,5 @@ twiddle_rom tw_gen(
         .data({TW_VAL_REAL,TW_VAL_IMAG})
 );
 
-endmodule
+endmodule : top_fft
 

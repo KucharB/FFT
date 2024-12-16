@@ -11,7 +11,7 @@ module twiddle_rom #(parameter WIDTH = 32, parameter DEPTH = 4096) (
 
     // Initialize the ROM with twiddle factors (precomputed values)
     initial begin
-        $readmemh("twiddle_factors.hex", rom); // Load from hex file
+        $readmemh("../FFT/twiddle_factors.hex", rom); // Load from hex file
     end
 
     // Read data based on address
