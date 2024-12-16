@@ -29,10 +29,10 @@ always_ff @(posedge i_clk or negedge i_rstn) begin : p_fsm_sync
   else begin
     state <= next_state;
     if(cnt_clr) begin
-      index_cnt = '0;
+      index_cnt <= '0;
     end
     else if(cnt_en) begin
-      index_cnt += 1; //tu chyba bedzie ARBURST
+      index_cnt <= index_cnt + 1; //tu chyba bedzie ARBURST
     end
   end
 end : p_fsm_sync
