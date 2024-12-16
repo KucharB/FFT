@@ -8,7 +8,6 @@ module fsm
     input logic calc_end,
     input logic data_to_cache_loaded,
     output logic load_nCompute,
-    output logic [11:0] read_adr,
     output logic count_n_en,
     output logic count_k_en,
     output logic clear

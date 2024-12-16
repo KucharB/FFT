@@ -42,31 +42,38 @@ wire [35:0] SEND_DATA;
 wire [11:0] SEND_ADDR;
 
 wire [11:0] N_INDEX;
-wire LOAD_nCOMPUTE;
+wire l_nComp;
 wire CALC_END;
 wire counter_n_en;
 wire counter_k_en;
 wire counter_n_ovf;
 wire device_clear;
 
+wire [15:0] RAM_in_axi;
+wire [11:0] SAMPLE_INDEX_ram;
+wire READ_ram;
+wire WRITE_ram;
+wire LOADED_DATA;
+
 Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(ARDATA), 
         .i_DATA_FROM_RAM(), .i_ARVALID(ARVALID), .i_AWREADY(AWREADY), 
         .i_CALC_END(CALC_END), .i_SAMPLES_NUMBER(SAMP_NUMBER),
-        .o_ARREADY(ARREADY), .o_AWVALID(AWVALID), .o_DATA_LOADED(), 
-        .o_AWDATA(AWDATA), .o_SAMPLE_ram(), .o_AWBURST(AWBURST), 
-        .o_ARBURST(ARBURST), .o_SAMPLE_INDEX_ram(),
-        .o_WRITE_ram(), .o_READ_ram());
+        .o_ARREADY(ARREADY), .o_AWVALID(AWVALID), .o_DATA_LOADED(LOADED_DATA), 
+        .o_AWDATA(AWDATA), .o_SAMPLE_ram(RAM_in_axi), .o_AWBURST(AWBURST), 
+        .o_ARBURST(ARBURST), .o_SAMPLE_INDEX_ram(SAMPLE_INDEX_ram),
+        .o_WRITE_ram(WRITE_ram), .o_READ_ram(READ_ram)
+);
 
-RAM ram1(.axi_data_in(o_DATA_LOADED), 
+RAM ram1(.axi_data_in(RAM_in_axi), 
          .axi_adr_in(o_SAMPLE_INDEX_ram), 
-         .axi_write(o_WRITE_ram),
-         .axi_read(o_READ_ram),
+         .axi_write(WRITE_ram),
+         .axi_read(READ_ram),
          .axi_data_out(i_DATA_FROM_RAM),
          .cir_data_in(SEND_DATA),
          .cir_adr_in(SEND_ADDR),
          .read_ram_to_cache(RAM2CACHE_ADDRESS)
          .cir_data_out(CACHE_DATA_IN),
-         .mode(LOAD_nCOMPUTE), // '1' AXI write and read, load to cache, '0' Circiut write
+         .mode(l_nComp), // '1' AXI write and read, load to cache, '0' Circiut write
          .clk(clk)
 );
 
@@ -76,7 +83,7 @@ Cache_memory c_mem(
         .read_adr(RAM2CACHE_ADDRESS),
         .read_data(CACHE_DATA_OUT),
         .clk(clk),
-        .write(LOAD_nCOMPUTE)
+        .write(l_nComp)
 );
 
 MUL_UNIT mul_real(
@@ -132,10 +139,9 @@ fsm finit_state(
         .ce(MAC_nRADIX),
         .nrst(n_Reset),
         .sample_num(SAMP_NUMBER),
-        .data_loaded(),
+        .data_loaded(LOADED_DATA),
         .calc_end(CALC_END),
-        .load_nCompute(),
-        .read_adr(),
+        .load_nCompute(l_nComp),
         .count_n_en(counter_n_en),
         .count_k_en(counter_k_en),
         .clear(device_clear)
