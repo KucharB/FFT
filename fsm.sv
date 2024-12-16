@@ -15,16 +15,15 @@ module fsm
 
 logic [1:0] states;
 
-IDLE = 2'b00;
-LOAD_TO_CACHE = 2'b01;
-CLEAR = 2'b11;
-COMPUTE = 2'b11;
+localparam  IDLE           = 2'b00;
+localparam  LOAD_TO_CACHE  = 2'b01;
+localparam  CLEAR          = 2'b10;
+localparam  COMPUTE        = 2'b11;
 
-alwasys_ff @(posedge clk) begin
+always_ff @(posedge clk) begin
 if (!nrst) begin
     states <= IDLE;
     load_nCompute <= 1'b1;
-    read_adr <= 12'b0;
     count_n_en <= 1'b0;
     count_k_en <= 1'b0;
     clear <= 1'b0;
@@ -46,15 +45,17 @@ else if(ce)begin
             clear <= 1'b1;
             count_n_en <= 1'b1;
             count_k_en <= 1'b1;
-            stats <= COMPUTE;
+            states <= COMPUTE;
         end
-        COMPUTE:
+        COMPUTE: begin
             clear <= 1'b1;
-            count_en <= 1'b1;
             load_nCompute <= 1'b0;
             if(calc_end) begin
-                state <= IDLE;
+                states <= IDLE;
                 load_nCompute <= 1'b1;
+                count_n_en <= 1'b0;
+                count_k_en <= 1'b0;
+                end
             end
     endcase
 end
