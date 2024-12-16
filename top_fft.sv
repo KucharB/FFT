@@ -18,7 +18,7 @@ module top_fft#(parameter N = 4)(
     input ARVALID,
     output logic ARREADY,
     output logic [N:0] ARBURST,
-    output logic [32:0] AWDATA,
+    output logic [31:0] AWDATA,
     output logic AWVALID,
     input logic AWREADY,
     output logic [N:0] AWBURST,
@@ -29,8 +29,7 @@ module top_fft#(parameter N = 4)(
     input n_Reset
 );
 
-wire [11:0] RAM2CACHE_ADDRESS;
-wire [11:0] READ_ADDDRESS;
+
 wire [15:0] CACHE_DATA_IN;
 wire [15:0] CACHE_DATA_OUT;
 wire [15:0] TW_VAL_REAL;
@@ -38,7 +37,7 @@ wire [15:0] TW_VAL_IMAG;
 wire [31:0] ACUMULATION_INPUT;
 wire [31:0] MUL_REAL_RESULT;
 wire [31:0] MUL_IMAG_RESULT;
-wire [35:0] SEND_DATA;
+wire [31:0] SEND_DATA;
 wire [11:0] SEND_ADDR;
 
 wire [11:0] N_INDEX;
@@ -55,8 +54,10 @@ wire READ_ram;
 wire WRITE_ram;
 wire LOADED_DATA;
 
+wire [31:0] DATA_FROM_RAM;
+
 Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(ARDATA), 
-        .i_DATA_FROM_RAM(), .i_ARVALID(ARVALID), .i_AWREADY(AWREADY), 
+        .i_DATA_FROM_RAM(DATA_FROM_RAM), .i_ARVALID(ARVALID), .i_AWREADY(AWREADY), 
         .i_CALC_END(CALC_END), .i_SAMPLES_NUMBER(SAMP_NUMBER),
         .o_ARREADY(ARREADY), .o_AWVALID(AWVALID), .o_DATA_LOADED(LOADED_DATA), 
         .o_AWDATA(AWDATA), .o_SAMPLE_ram(RAM_in_axi), .o_AWBURST(AWBURST), 
@@ -68,10 +69,10 @@ RAM ram1(.axi_data_in(RAM_in_axi),
          .axi_adr_in(o_SAMPLE_INDEX_ram), 
          .axi_write(WRITE_ram),
          .axi_read(READ_ram),
-         .axi_data_out(i_DATA_FROM_RAM),
+         .axi_data_out(DATA_FROM_RAM),
          .cir_data_in(SEND_DATA),
          .cir_adr_in(SEND_ADDR),
-         .read_ram_to_cache(RAM2CACHE_ADDRESS),
+         .read_ram_to_cache(N_INDEX),
          .cir_data_out(CACHE_DATA_IN),
          .mode(l_nComp), // '1' AXI write and read, load to cache, '0' Circiut write
          .clk(clk)
@@ -79,8 +80,8 @@ RAM ram1(.axi_data_in(RAM_in_axi),
 
 Cache_memory c_mem(
         .data_in(CACHE_DATA_IN),
-        .write_adr(RAM2CACHE_ADDRESS),
-        .read_adr(RAM2CACHE_ADDRESS),
+        .write_adr(N_INDEX),
+        .read_adr(N_INDEX),
         .read_data(CACHE_DATA_OUT),
         .clk(clk),
         .write(l_nComp)
@@ -144,7 +145,10 @@ fsm finit_state(
         .load_nCompute(l_nComp),
         .count_n_en(counter_n_en),
         .count_k_en(counter_k_en),
-        .clear(device_clear)
+        .clear(device_clear),
+
+          .data_to_cache_loaded(counter_n_ovf)
+
 );
 
 twiddle_rom tw_gen(

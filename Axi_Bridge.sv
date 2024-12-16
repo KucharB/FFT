@@ -13,7 +13,7 @@ module Axi_Bridge #(
   output logic [1:0] o_AWBURST, o_ARBURST,
   output logic [11:0] o_SAMPLE_INDEX_ram,
   output logic o_WRITE_ram, o_READ_ram,
-  output bridge_fsm current_state
+  //output bridge_fsm current_state
 );
 
 bridge_fsm state, next_state;
@@ -90,6 +90,6 @@ always_comb begin : p_fsm_comb
   endcase
 end : p_fsm_comb
 
-assign current_state = state; //current state at the output
+//assign current_state = state; //current state at the output
 
 endmodule
