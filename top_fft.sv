@@ -1,17 +1,17 @@
-//`include "RAM.sv"
-//`include "mux.sv"
-//`include "MUL_UNIT.sv"
-//`include "Rounding_unit.sv"
-//`include "Accumulation_unit.sv"
-//`include "Axi_Bridge.sv"
-//`include "counter.sv"
-//`include "fsm.sv"
-//`include "twidle_fac_gen.sv"
+`include "RAM.sv"
+`include "MUL_UNIT.sv"
+`include "Rounding_unit.sv"
+`include "Accumulation_unit.sv"
+`include "Axi_Bridge.sv"
+`include "counter.sv"
+`include "fsm.sv"
+`include "twidle_fac_gen.sv"
+`include "Cache_memory.sv"
 /////////////////////////////////////////////////////////
 // Missing things:
 
 
-module top_fft #(parameter N = 4)(
+module top_fft #(parameter N = 2)(
     // AXI BUS
     input               [31:0]  RDATA,
     input                       RVALID,
@@ -56,8 +56,11 @@ wire READ_ram;
 wire WRITE_ram;
 wire LOADED_DATA;
 
-Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(RDATA), 
-        .i_DATA_FROM_RAM(DATA_FROM_RAM), .i_ARVALID(RVALID), .i_AWREADY(WREADY), 
+//
+wire ram_to_cache;
+
+Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(RDATA),
+        .i_DATA_FROM_RAM(DATA_FROM_RAM), .i_ARVALID(RVALID), .i_AWREADY(WREADY),
         .i_CALC_END(CALC_END), .i_SAMPLES_NUMBER(SAMP_NUMBER),
         .o_ARREADY(RREADY), .o_AWVALID(WVALID), .o_DATA_LOADED(LOADED_DATA), 
         .o_AWDATA(WDATA), .o_SAMPLE_ram(RAM_in_axi), .o_AWBURST(WBURST), 
@@ -74,6 +77,9 @@ RAM ram1(.axi_data_in(RAM_in_axi),
          .cir_adr_in(SEND_ADDR),
          .read_ram_to_cache(N_INDEX),
          .cir_data_out(CACHE_DATA_IN),
+         //
+        .write_to_cache(ram_to_cache),
+         //
          .mode(l_nComp), // '1' AXI write and read, load to cache, '0' Circiut write
          .clk(clk)
 );
@@ -146,8 +152,10 @@ fsm finit_state(
         .count_n_en(counter_n_en),
         .count_k_en(counter_k_en),
         .clear(device_clear),
-
-          .data_to_cache_loaded(counter_n_ovf)
+        //
+        .load_to_cache(ram_to_cache),
+        //
+        .data_to_cache_loaded(counter_n_ovf)
 
 );
 

@@ -1,4 +1,4 @@
-//`include "Axi_Bridge_fsm.sv"
+`include "Axi_Bridge_fsm.sv"
 import Axi_Bridge_fsm::*;
 module Axi_Bridge #(
   parameter DATA_WIDTH = 32

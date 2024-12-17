@@ -10,6 +10,9 @@ module fsm
     output logic load_nCompute,
     output logic count_n_en,
     output logic count_k_en,
+    //
+    output logic load_to_cache,
+    //
     output logic clear
 );
 
@@ -27,6 +30,7 @@ if (!nrst) begin
     count_n_en <= 1'b0;
     count_k_en <= 1'b0;
     clear <= 1'b0;
+    load_to_cache <= 1'b0;
 end
 else if(ce)begin
     case(states)
@@ -35,21 +39,23 @@ else if(ce)begin
             states <= LOAD_TO_CACHE;
             count_n_en <= 1'b1;
             clear <= 1'b1;
+            //
+            load_to_cache <= 1'b1;
             end
         LOAD_TO_CACHE:
             if(data_to_cache_loaded) begin
                 states <= CLEAR;
                 clear <= 1'b0;
+                load_to_cache <= 1'b0;
             end
         CLEAR: begin
             clear <= 1'b1;
             count_n_en <= 1'b1;
             count_k_en <= 1'b1;
             states <= COMPUTE;
+            load_nCompute <= 1'b0;
         end
         COMPUTE: begin
-            clear <= 1'b1;
-            load_nCompute <= 1'b0;
             if(calc_end) begin
                 states <= IDLE;
                 load_nCompute <= 1'b1;
