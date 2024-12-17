@@ -13,17 +13,21 @@ always_ff @(posedge clk)
 begin
 if (!nrst) begin
     coun_val <= 0;
+    over <= 1'b0;
 end
 else if (ce) begin
-    if(coun_val < max_val)
+    if(coun_val < (max_val-1))begin
     coun_val <= coun_val + 1;
-    else 
+    over <= 1'b0;
+    end
+    else  begin
     coun_val <= 0;
+    over <= 1'b1;
+    end
 end
 end
 
 always_comb begin
     o_data = coun_val;
-    over = ((o_data == max_val) && ce);
 end
 endmodule
