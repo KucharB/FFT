@@ -5,13 +5,11 @@ module Axi_Bridge #(
 )
 (
   input i_clk, i_rstn,
-  input [15:0] i_ARDATA, 
-  input [DATA_WIDTH-1:0] i_DATA_FROM_RAM,
+  input [DATA_WIDTH-1:0] i_ARDATA, i_DATA_FROM_RAM,
   input i_ARVALID, i_AWREADY, i_CALC_END,
   input [11:0] i_SAMPLES_NUMBER,
   output logic o_ARREADY, o_AWVALID, o_DATA_LOADED,
-  output logic [DATA_WIDTH-1:0] o_AWDATA, 
-  output logic [15:0] o_SAMPLE_ram,
+  output logic [DATA_WIDTH-1:0] o_AWDATA, o_SAMPLE_ram,
   output logic [1:0] o_AWBURST, o_ARBURST,
   output logic [11:0] o_SAMPLE_INDEX_ram,
   output logic o_WRITE_ram, o_READ_ram
@@ -24,7 +22,6 @@ bit cnt_en, cnt_clr;
 
 // FSM
 always_ff @(posedge i_clk or negedge i_rstn) begin : p_fsm_sync
-o_DATA_LOADED = 1'b0; //change BK
   if (~i_rstn) begin
     state <= bridge_IDLE;
     index_cnt <= '0;
@@ -59,7 +56,7 @@ always_comb begin : p_fsm_comb
       o_SAMPLE_ram = i_ARDATA;
       //o_ARBURST = ?? TODO
       if(index_cnt == (i_SAMPLES_NUMBER - 1)) begin
-        o_DATA_LOADED = 1'b1; //before change BK
+        o_DATA_LOADED = 1'b1;
         next_state = bridge_WAIT;
         cnt_clr = 1'b1;
       end
@@ -69,7 +66,6 @@ always_comb begin : p_fsm_comb
     end
 
     bridge_WAIT : begin
-     //o_DATA_LOADED = 1'b1; // after change BK
       o_AWVALID = 1'b1;
       if(i_CALC_END && i_AWREADY) begin
         next_state = bridge_WRITE;

@@ -1,0 +1,700 @@
+$date
+	Tue Dec 17 17:55:38 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	100ps
+$end
+$scope module axi_tb $end
+$var wire 1 ! o_WRITE_ram $end
+$var wire 32 " o_SAMPLE_ram [31:0] $end
+$var wire 12 # o_SAMPLE_INDEX_ram [11:0] $end
+$var wire 1 $ o_READ_ram $end
+$var wire 1 % o_DATA_LOADED $end
+$var wire 1 & o_AWVALID $end
+$var wire 32 ' o_AWDATA [31:0] $end
+$var wire 2 ( o_AWBURST [1:0] $end
+$var wire 1 ) o_ARREADY $end
+$var wire 2 * o_ARBURST [1:0] $end
+$var wire 32 + RAM_o_data [31:0] $end
+$var parameter 32 , DATA_WIDTH $end
+$var reg 12 - RAM_o_adr [11:0] $end
+$var reg 12 . counter [11:0] $end
+$var reg 32 / i_ARDATA [31:0] $end
+$var reg 1 0 i_ARVALID $end
+$var reg 1 1 i_AWREADY $end
+$var reg 1 2 i_CALC_END $end
+$var reg 32 3 i_DATA_FROM_RAM [31:0] $end
+$var reg 12 4 i_SAMPLES_NUMBER [11:0] $end
+$var reg 1 5 i_clk $end
+$var reg 1 6 i_rstn $end
+$var reg 32 7 ram_in [31:0] $end
+$scope module ram_uut $end
+$var wire 1 5 clk $end
+$var wire 12 8 o_adr [11:0] $end
+$var wire 1 ! write $end
+$var wire 32 9 i_data [31:0] $end
+$var wire 12 : i_adr [11:0] $end
+$var reg 32 ; o_data [31:0] $end
+$upscope $end
+$scope module uut $end
+$var wire 32 < i_ARDATA [31:0] $end
+$var wire 1 0 i_ARVALID $end
+$var wire 1 1 i_AWREADY $end
+$var wire 1 2 i_CALC_END $end
+$var wire 32 = i_DATA_FROM_RAM [31:0] $end
+$var wire 12 > i_SAMPLES_NUMBER [11:0] $end
+$var wire 1 5 i_clk $end
+$var wire 1 6 i_rstn $end
+$var parameter 32 ? DATA_WIDTH $end
+$var reg 12 @ index_cnt [11:0] $end
+$var reg 2 A next_state [1:0] $end
+$var reg 2 B o_ARBURST [1:0] $end
+$var reg 1 ) o_ARREADY $end
+$var reg 2 C o_AWBURST [1:0] $end
+$var reg 32 D o_AWDATA [31:0] $end
+$var reg 1 & o_AWVALID $end
+$var reg 1 % o_DATA_LOADED $end
+$var reg 1 $ o_READ_ram $end
+$var reg 12 E o_SAMPLE_INDEX_ram [11:0] $end
+$var reg 32 F o_SAMPLE_ram [31:0] $end
+$var reg 1 ! o_WRITE_ram $end
+$var reg 2 G state [1:0] $end
+$var reg 1 H cnt_clr $end
+$var reg 1 I cnt_en $end
+$scope begin p_fsm_comb $end
+$upscope $end
+$scope begin p_fsm_sync $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100000 ?
+b100000 ,
+$end
+#0
+$dumpvars
+0I
+0H
+b0 G
+bx F
+bx E
+bx D
+bx C
+bx B
+b0 A
+b0 @
+b0 >
+b0 =
+b0 <
+bx ;
+bx :
+bx 9
+b0 8
+bx 7
+06
+05
+b0 4
+b0 3
+02
+x1
+x0
+b0 /
+b0 .
+b0 -
+bx +
+bx *
+1)
+bx (
+bx '
+0&
+0%
+0$
+bx #
+bx "
+0!
+$end
+#50
+1)
+b10 3
+b10 =
+b1 /
+b1 <
+15
+#100
+16
+05
+#150
+b1 A
+1)
+b100 3
+b100 =
+b10 /
+b10 <
+10
+b1010 4
+b1010 >
+15
+#200
+05
+#250
+1I
+b11 "
+b11 9
+b11 F
+b0 #
+b0 :
+b0 E
+1!
+b1 G
+1)
+b110 3
+b110 =
+b11 /
+b11 <
+15
+#300
+05
+#350
+b1 @
+b100 "
+b100 9
+b100 F
+b1 #
+b1 :
+b1 E
+1I
+1)
+1!
+b1000 3
+b1000 =
+b100 /
+b100 <
+15
+#400
+05
+#450
+b10 @
+b101 "
+b101 9
+b101 F
+b10 #
+b10 :
+b10 E
+1I
+1)
+1!
+b1010 3
+b1010 =
+b101 /
+b101 <
+15
+#500
+05
+#550
+b11 @
+b110 "
+b110 9
+b110 F
+b11 #
+b11 :
+b11 E
+1I
+1)
+1!
+b1100 3
+b1100 =
+b110 /
+b110 <
+15
+#600
+05
+#650
+b100 @
+b111 "
+b111 9
+b111 F
+b100 #
+b100 :
+b100 E
+1I
+1)
+1!
+b1110 3
+b1110 =
+b111 /
+b111 <
+15
+#700
+05
+#750
+b101 @
+b1000 "
+b1000 9
+b1000 F
+b101 #
+b101 :
+b101 E
+1I
+1)
+1!
+b10000 3
+b10000 =
+b1000 /
+b1000 <
+15
+#800
+05
+#850
+b110 @
+b1001 "
+b1001 9
+b1001 F
+b110 #
+b110 :
+b110 E
+1I
+1)
+1!
+b10010 3
+b10010 =
+b1001 /
+b1001 <
+15
+#900
+05
+#950
+b111 @
+b1010 "
+b1010 9
+b1010 F
+b111 #
+b111 :
+b111 E
+1I
+1)
+1!
+b10100 3
+b10100 =
+b1010 /
+b1010 <
+15
+#1000
+05
+#1050
+b1000 @
+b1011 "
+b1011 9
+b1011 F
+b1000 #
+b1000 :
+b1000 E
+1I
+1)
+1!
+b10110 3
+b10110 =
+b1011 /
+b1011 <
+15
+#1100
+05
+#1150
+1H
+b11 A
+1%
+b1001 @
+b1100 "
+b1100 9
+b1100 F
+b1001 #
+b1001 :
+b1001 E
+0I
+1)
+1!
+b11000 3
+b11000 =
+b1100 /
+b1100 <
+11
+00
+15
+#1200
+05
+#1250
+1&
+b0 @
+b11 G
+bx "
+bx 9
+bx F
+bx #
+bx :
+bx E
+0H
+0)
+0!
+0%
+b11010 3
+b11010 =
+b1101 /
+b1101 <
+15
+#1300
+05
+#1350
+b10 A
+1&
+b11100 3
+b11100 =
+b1110 /
+b1110 <
+b11 +
+b11 ;
+12
+15
+#1400
+05
+#1450
+1I
+b11110 '
+b11110 D
+b0 #
+b0 :
+b0 E
+1$
+b10 G
+1&
+b11110 3
+b11110 =
+b1111 /
+b1111 <
+15
+#1500
+05
+#1550
+b1 @
+b100000 '
+b100000 D
+b1 #
+b1 :
+b1 E
+1I
+1&
+1$
+b100000 3
+b100000 =
+b10000 /
+b10000 <
+15
+#1600
+05
+#1650
+b10 @
+b100010 '
+b100010 D
+b10 #
+b10 :
+b10 E
+1I
+1&
+1$
+b100010 3
+b100010 =
+b10001 /
+b10001 <
+15
+#1700
+05
+#1750
+b11 @
+b100100 '
+b100100 D
+b11 #
+b11 :
+b11 E
+1I
+1&
+1$
+b100100 3
+b100100 =
+b10010 /
+b10010 <
+15
+#1800
+05
+#1850
+b100 @
+b100110 '
+b100110 D
+b100 #
+b100 :
+b100 E
+1I
+1&
+1$
+b100110 3
+b100110 =
+b10011 /
+b10011 <
+15
+#1900
+05
+#1950
+b101 @
+b101000 '
+b101000 D
+b101 #
+b101 :
+b101 E
+1I
+1&
+1$
+b101000 3
+b101000 =
+b10100 /
+b10100 <
+15
+#2000
+05
+#2050
+b110 @
+b101010 '
+b101010 D
+b110 #
+b110 :
+b110 E
+1I
+1&
+1$
+b101010 3
+b101010 =
+b10101 /
+b10101 <
+15
+#2100
+05
+#2150
+b111 @
+b101100 '
+b101100 D
+b111 #
+b111 :
+b111 E
+1I
+1&
+1$
+b101100 3
+b101100 =
+b10110 /
+b10110 <
+15
+#2200
+05
+#2250
+b1000 @
+b101110 '
+b101110 D
+b1000 #
+b1000 :
+b1000 E
+1I
+1&
+1$
+b101110 3
+b101110 =
+b10111 /
+b10111 <
+15
+#2300
+05
+#2350
+b0 A
+1H
+b1001 @
+b110000 '
+b110000 D
+b1001 #
+b1001 :
+b1001 E
+0I
+1&
+1$
+b110000 3
+b110000 =
+b11000 /
+b11000 <
+15
+#2400
+05
+#2450
+1)
+b0 @
+b0 G
+bx '
+bx D
+bx #
+bx :
+bx E
+0H
+0&
+0$
+b110010 3
+b110010 =
+b11001 /
+b11001 <
+15
+#2500
+05
+#2550
+1)
+b110100 3
+b110100 =
+b11010 /
+b11010 <
+b1 .
+b11 7
+15
+#2600
+05
+#2650
+1)
+b10 .
+b100 7
+b1 -
+b1 8
+b110110 3
+b110110 =
+b11011 /
+b11011 <
+15
+#2700
+05
+#2750
+1)
+b111000 3
+b111000 =
+b11100 /
+b11100 <
+b101 +
+b101 ;
+b11 .
+b101 7
+b10 -
+b10 8
+15
+#2800
+05
+#2850
+1)
+b100 .
+b110 7
+b11 -
+b11 8
+b111010 3
+b111010 =
+b11101 /
+b11101 <
+15
+#2900
+05
+#2950
+1)
+b111100 3
+b111100 =
+b11110 /
+b11110 <
+b111 +
+b111 ;
+b101 .
+b111 7
+b100 -
+b100 8
+15
+#3000
+05
+#3050
+1)
+b110 .
+b1000 7
+b101 -
+b101 8
+b111110 3
+b111110 =
+b11111 /
+b11111 <
+15
+#3100
+05
+#3150
+1)
+b1000000 3
+b1000000 =
+b100000 /
+b100000 <
+b1001 +
+b1001 ;
+b111 .
+b1001 7
+b110 -
+b110 8
+15
+#3200
+05
+#3250
+1)
+b1000 .
+b1010 7
+b111 -
+b111 8
+b1000010 3
+b1000010 =
+b100001 /
+b100001 <
+15
+#3300
+05
+#3350
+1)
+b1000100 3
+b1000100 =
+b100010 /
+b100010 <
+b1011 +
+b1011 ;
+b1001 .
+b1011 7
+b1000 -
+b1000 8
+15
+#3400
+05
+#3450
+1)
+b1010 .
+b1100 7
+b1001 -
+b1001 8
+b1000110 3
+b1000110 =
+b100011 /
+b100011 <
+15
+#3500
+05
+#3550
+1)
+b1001000 3
+b1001000 =
+b100100 /
+b100100 <
+bx +
+bx ;
+b1010 -
+b1010 8
+15

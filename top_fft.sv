@@ -13,7 +13,7 @@
 
 module top_fft #(parameter N = 2)(
     // AXI BUS
-    input               [31:0]  RDATA,
+    input               [15:0]  RDATA,
     input                       RVALID,
     output logic                RREADY,
     output logic        [N-1:0] RBURST,
@@ -21,8 +21,7 @@ module top_fft #(parameter N = 2)(
     output logic                WVALID,
     input logic                 WREADY,
     output logic        [N-1:0] WBURST,
-    input               [31:0]  AWADDR,
-    input               [31:0]  ARADDR,
+
 
     input [11:0] SAMP_NUMBER,
     input clk,
@@ -31,33 +30,34 @@ module top_fft #(parameter N = 2)(
 );
 
 
-wire [15:0] CACHE_DATA_IN;
-wire [15:0] CACHE_DATA_OUT;
-wire [15:0] TW_VAL_REAL;
-wire [15:0] TW_VAL_IMAG;
-wire [31:0] ACUMULATION_INPUT;
-wire [31:0] MUL_REAL_RESULT;
-wire [31:0] MUL_IMAG_RESULT;
-wire [31:0] SEND_DATA;
-wire [11:0] SEND_ADDR;
+logic [15:0] CACHE_DATA_IN;
+logic [15:0] CACHE_DATA_OUT;
+logic [15:0] TW_VAL_REAL;
+logic [15:0] TW_VAL_IMAG;
+logic [31:0] ACUMULATION_INPUT;
+logic [31:0] MUL_REAL_RESULT;
+logic [31:0] MUL_IMAG_RESULT;
+logic [31:0] SEND_DATA;
+logic [11:0] SEND_ADDR;
 
-wire [11:0] N_INDEX;
-wire l_nComp;
-wire CALC_END;
-wire counter_n_en;
-wire counter_k_en;
-wire counter_n_ovf;
-wire device_clear;
+logic [11:0] N_INDEX;
+logic l_nComp;
+logic CALC_END;
+logic counter_n_en;
+logic counter_k_en;
+logic counter_n_ovf;
+logic device_clear;
 
-wire [15:0] RAM_in_axi;
-wire [31:0] DATA_FROM_RAM;
-wire [11:0] SAMPLE_INDEX_ram;
-wire READ_ram;
-wire WRITE_ram;
-wire LOADED_DATA;
+logic [15:0] RAM_in_axi;
+logic [31:0] DATA_FROM_RAM;
+logic [11:0] SAMPLE_INDEX_ram;
+logic READ_ram;
+logic WRITE_ram;
+logic LOADED_DATA;
 
 //
-wire ram_to_cache;
+logic ram_to_cache;
+logic [1:0] fsm_state;
 
 Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(RDATA),
         .i_DATA_FROM_RAM(DATA_FROM_RAM), .i_ARVALID(RVALID), .i_AWREADY(WREADY),
@@ -68,15 +68,16 @@ Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(RDATA),
         .o_WRITE_ram(WRITE_ram), .o_READ_ram(READ_ram)
 );
 
-RAM ram1(.axi_data_in(RAM_in_axi), 
+RAM ram1(
+        .axi_data_in(RAM_in_axi), 
          .axi_adr_in(SAMPLE_INDEX_ram), 
          .axi_write(WRITE_ram),
          .axi_read(READ_ram),
          .axi_data_out(DATA_FROM_RAM),
-         .cir_data_in(SEND_DATA),
-         .cir_adr_in(SEND_ADDR),
-         .read_ram_to_cache(N_INDEX),
-         .cir_data_out(CACHE_DATA_IN),
+         .SEND_DATA(SEND_DATA),
+         .SEND_ADDR(SEND_ADDR),
+         .READ_ADDRESS(N_INDEX),
+         .READ_DATA(CACHE_DATA_IN),
          //
         .write_to_cache(ram_to_cache),
          //
@@ -90,7 +91,7 @@ Cache_memory c_mem(
         .read_adr(N_INDEX),
         .read_data(CACHE_DATA_OUT),
         .clk(clk),
-        .write(!l_nComp)
+        .write(ram_to_cache)
 );
 
 MUL_UNIT mul_real(
@@ -155,7 +156,8 @@ fsm finit_state(
         //
         .load_to_cache(ram_to_cache),
         //
-        .data_to_cache_loaded(counter_n_ovf)
+        .data_to_cache_loaded(counter_n_ovf),
+        .state(fsm_state)
 
 );
 

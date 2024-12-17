@@ -13,7 +13,8 @@ module fsm
     //
     output logic load_to_cache,
     //
-    output logic clear
+    output logic clear,
+    output [1:0] state
 );
 
 logic [1:0] states;
@@ -36,11 +37,12 @@ else if(ce)begin
     case(states)
         IDLE:
             if(data_loaded) begin
-            states <= LOAD_TO_CACHE;
-            count_n_en <= 1'b1;
-            clear <= 1'b1;
-            //
-            load_to_cache <= 1'b1;
+                states <= LOAD_TO_CACHE;
+                count_n_en <= 1'b1;
+                clear <= 1'b1;
+                //
+                load_to_cache <= 1'b1;
+                load_nCompute <= 1'b0;
             end
         LOAD_TO_CACHE:
             if(data_to_cache_loaded) begin
@@ -66,5 +68,7 @@ else if(ce)begin
     endcase
 end
 end
+
+assign state = states;
 
 endmodule
