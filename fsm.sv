@@ -38,18 +38,19 @@ else if(ce)begin
         IDLE:
             if(data_loaded) begin
                 states <= LOAD_TO_CACHE;
-                count_n_en <= 1'b1;
                 clear <= 1'b1;
                 //
-                load_to_cache <= 1'b1;
                 load_nCompute <= 1'b0;
+                load_to_cache <= 1'b1;
             end
-        LOAD_TO_CACHE:
+        LOAD_TO_CACHE:begin
+        count_n_en <= 1'b1;
             if(data_to_cache_loaded) begin
                 states <= CLEAR;
                 clear <= 1'b0;
                 load_to_cache <= 1'b0;
             end
+        end
         CLEAR: begin
             clear <= 1'b1;
             count_n_en <= 1'b1;

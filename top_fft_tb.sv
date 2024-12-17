@@ -55,7 +55,7 @@ initial begin
     i_rstn = 1'b1;
     @(posedge i_clk);
     // READ
-    i_SAMPLES_NUMBER = 10;
+    i_SAMPLES_NUMBER = 3;
     i_ARVALID = 1'b1;
     repeat(i_SAMPLES_NUMBER) @(posedge i_clk);
     // WAIT

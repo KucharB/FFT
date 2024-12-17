@@ -14,6 +14,8 @@ module Cache_memory(
     
 reg [15:0] MEM [0:4095];
 
+initial MEM[0]=16'd0;
+
 always @(posedge clk) begin
 if(write)begin
     MEM[write_adr] <= data_in;

@@ -24,7 +24,6 @@ bit cnt_en, cnt_clr;
 
 // FSM
 always_ff @(posedge i_clk or negedge i_rstn) begin : p_fsm_sync
-o_DATA_LOADED = 1'b0; //change BK
   if (~i_rstn) begin
     state <= bridge_IDLE;
     index_cnt <= '0;
@@ -69,7 +68,6 @@ always_comb begin : p_fsm_comb
     end
 
     bridge_WAIT : begin
-     //o_DATA_LOADED = 1'b1; // after change BK
       o_AWVALID = 1'b1;
       if(i_CALC_END && i_AWREADY) begin
         next_state = bridge_WRITE;
