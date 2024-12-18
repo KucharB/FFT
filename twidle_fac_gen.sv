@@ -1,5 +1,6 @@
 // ROM implementation with 4096 twiddle factors in 2's complement
 module twiddle_rom #(parameter WIDTH = 32, parameter DEPTH = 4096) (
+    input clk, // first change
     input logic [11:0] N,
     input logic [11:0] k_index,
     input logic [11:0] n_index,
@@ -11,14 +12,17 @@ module twiddle_rom #(parameter WIDTH = 32, parameter DEPTH = 4096) (
 
     // Initialize the ROM with twiddle factors (precomputed values)
     initial begin
-        $readmemh("../FFT/twiddle_factors.hex", rom); // Load from hex file
+        $readmemh("twiddle_factors.hex", rom); // Load from hex file
     end
 
     // Read data based on address
     always_comb begin
         addr = (4096/N) * k_index * n_index;
-        data = rom[addr];
+        //data = rom[addr];
     end
+// second change
+    always_ff @(posedge clk)
+    data <= rom[addr];
 
 endmodule
 /*

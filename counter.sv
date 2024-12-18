@@ -20,10 +20,11 @@ else if (ce) begin
     coun_val <= coun_val + 1;
     over <= 1'b0;
     end
-    else  begin
-    coun_val <= 0;
+    else if(coun_val == max_val - 1) begin
     over <= 1'b1;
     end
+    else
+    coun_val <= 0;
 end
 end
 

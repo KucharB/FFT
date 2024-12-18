@@ -162,6 +162,7 @@ fsm finit_state(
 );
 
 twiddle_rom tw_gen(
+        .clk(clk),
         .N(SAMP_NUMBER), 
         .k_index(SEND_ADDR), 
         .n_index(N_INDEX), 
