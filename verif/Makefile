@@ -8,19 +8,18 @@ MODULE = test_basic  # Nazwa pliku testowego Python (bez .py)
 IVERILOG_FLAGS += -g2012 -I../FFT/
 IVERILOG_FLAGS += --trace
 
-# Ścieżki do plików designu
-VERILOG_SOURCES += $(PWD)/../FFT/Axi_Bridge_fsm.sv
-VERILOG_SOURCES += $(PWD)/../FFT/RAM.sv
-VERILOG_SOURCES += $(PWD)/../FFT/Cache_memory.sv
-# VERILOG_SOURCES += $(PWD)/../FFT/mux.sv
-VERILOG_SOURCES += $(PWD)/../FFT/MUL_UNIT.sv
-VERILOG_SOURCES += $(PWD)/../FFT/Rounding_unit.sv
-VERILOG_SOURCES += $(PWD)/../FFT/Accumulation_unit.sv
-VERILOG_SOURCES += $(PWD)/../FFT/Axi_Bridge.sv
-VERILOG_SOURCES += $(PWD)/../FFT/counter.sv
-VERILOG_SOURCES += $(PWD)/../FFT/fsm.sv
-VERILOG_SOURCES += $(PWD)/../FFT/twidle_fac_gen.sv
-VERILOG_SOURCES += $(PWD)/../FFT/top_fft.sv
+# Ścieżki do plików designu 
+VERILOG_SOURCES += $(PWD)/../Axi_Bridge_fsm.sv
+VERILOG_SOURCES += $(PWD)/../RAM.sv
+VERILOG_SOURCES += $(PWD)/../Cache_memory.sv
+VERILOG_SOURCES += $(PWD)/../MUL_UNIT.sv
+VERILOG_SOURCES += $(PWD)/../Rounding_unit.sv
+VERILOG_SOURCES += $(PWD)/../Accumulation_unit.sv
+VERILOG_SOURCES += $(PWD)/../Axi_Bridge.sv
+VERILOG_SOURCES += $(PWD)/../counter.sv
+VERILOG_SOURCES += $(PWD)/../fsm.sv
+VERILOG_SOURCES += $(PWD)/../twidle_fac_gen.sv
+VERILOG_SOURCES += $(PWD)/../top_fft.sv
 
 # Debug: pokaż zmienną PYTHONPATH
 sim:
