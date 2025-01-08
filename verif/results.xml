@@ -1,0 +1,8 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1736362670" />
+    <testcase name="basic_test" classname="test_basic" file="/home/futurephile/PBL/src/tests/test_basic.py" lineno="19" time="0.0002906322479248047" sim_time_ns="0.001" ratio_time="3.440774405250205">
+      <failure message="Test failed with RANDOM_SEED=1736362670" />
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -1,6 +1,5 @@
 export PYTHONPATH := $(PWD):$(PWD)/../tests:$(PYTHONPATH)
 
-
 TOPLEVEL_LANG = verilog
 SIM = icarus
 TOPLEVEL = top_fft  # Moduł top-level z pliku FFT
