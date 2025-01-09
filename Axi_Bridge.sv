@@ -5,17 +5,17 @@ module Axi_Bridge #(
 )
 (
   input i_clk, i_rstn,
-  input [15:0] i_ARDATA, 
+  input [15:0] i_AWDATA, 
   input [DATA_WIDTH-1:0] i_DATA_FROM_RAM,
-  input i_ARVALID, i_AWREADY, i_CALC_END,
+  input i_AWVALID, i_ARREADY, i_CALC_END,
   input [11:0] i_SAMPLES_NUMBER,
-  output logic o_ARREADY, o_AWVALID, o_DATA_LOADED,
-  output logic [DATA_WIDTH-1:0] o_AWDATA, 
+  output logic o_AWREADY, o_ARVALID, o_DATA_LOADED,
+  output logic [DATA_WIDTH-1:0] o_ARDATA, 
   output logic [15:0] o_SAMPLE_ram,
   output logic [1:0] o_AWBURST, o_ARBURST,
   output logic [11:0] o_SAMPLE_INDEX_ram,
-  output logic o_WRITE_ram, o_READ_ram
-  //output bridge_fsm current_state
+  output logic o_WRITE_ram, o_READ_ram,
+  output bridge_fsm current_state // - ZAKOMENTOWAC
 );
 
 bridge_fsm state, next_state;
@@ -40,50 +40,49 @@ always_ff @(posedge i_clk or negedge i_rstn) begin : p_fsm_sync
 end : p_fsm_sync
 
 always_comb begin : p_fsm_comb
-  {o_ARREADY, o_AWVALID, o_WRITE_ram, o_READ_ram, o_DATA_LOADED} = 5'b00000;
+  {o_AWREADY, o_ARVALID, o_WRITE_ram, o_READ_ram, o_DATA_LOADED} = 5'b00000;
   {cnt_clr, cnt_en} = 2'b00;
-  {o_AWDATA, o_SAMPLE_ram, o_AWBURST, o_ARBURST, o_SAMPLE_INDEX_ram} = 'x;
+  {o_ARDATA, o_SAMPLE_ram, o_AWBURST, o_ARBURST, o_SAMPLE_INDEX_ram} = 'x;
   case(state)
     bridge_IDLE : begin
-      o_ARREADY = 1'b1;
-      if(i_ARVALID) begin
-        next_state = bridge_READ;
+      o_AWREADY = 1'b1;
+      if(i_AWVALID) begin
+        next_state = bridge_WRITE;
       end
     end
 
-    bridge_READ : begin //Odczyt próbek z wejscia
-      o_ARREADY = 1'b1;
+    bridge_WRITE : begin //Zapis probek do RAMU
+      o_AWREADY = 1'b1;
       o_WRITE_ram = 1'b1;
       o_SAMPLE_INDEX_ram = index_cnt;
-      o_SAMPLE_ram = i_ARDATA;
+      o_SAMPLE_ram = o_ARDATA;
       //o_ARBURST = ?? TODO
       if(index_cnt == (i_SAMPLES_NUMBER - 1)) begin
         o_DATA_LOADED = 1'b1; //before change BK
         next_state = bridge_WAIT;
         cnt_clr = 1'b1;
       end
-      else if(i_ARVALID) begin
+      else if(i_AWVALID) begin
         cnt_en = 1'b1;
       end
     end
 
     bridge_WAIT : begin
-      o_AWVALID = 1'b1;
-      if(i_CALC_END && i_AWREADY) begin
-        next_state = bridge_WRITE;
+      if(i_CALC_END && i_ARREADY) begin
+        next_state = bridge_READ;
       end
     end
 
-    bridge_WRITE : begin
-      o_AWVALID = 1'b1;
+    bridge_READ : begin
+      o_ARVALID = 1'b1;
       o_READ_ram = 1'b1;
       o_SAMPLE_INDEX_ram = index_cnt;
-      o_AWDATA = i_DATA_FROM_RAM;
+      o_ARDATA = i_DATA_FROM_RAM;
       if (index_cnt == (i_SAMPLES_NUMBER - 1)) begin
         cnt_clr = 1'b1;
         next_state = bridge_IDLE;
       end
-      else if (i_AWREADY) begin
+      else if (i_ARREADY) begin
         cnt_en = 1'b1;
       end
     end
@@ -92,6 +91,6 @@ always_comb begin : p_fsm_comb
   endcase
 end : p_fsm_comb
 
-//assign current_state = state; //current state at the output
+assign current_state = state; //current state at the output, zakomentowac
 
 endmodule
