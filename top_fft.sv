@@ -1,23 +1,23 @@
-`include "RAM.sv"
-`include "MUL_UNIT.sv"
-`include "Rounding_unit.sv"
-`include "Accumulation_unit.sv"
-`include "Axi_Bridge.sv"
-`include "counter.sv"
-`include "fsm.sv"
-`include "twidle_fac_gen.sv"
-`include "Cache_memory.sv"
+//`include "RAM.sv"
+//`include "MUL_UNIT.sv"
+//`include "Rounding_unit.sv"
+//`include "Accumulation_unit.sv"
+//`include "Axi_Bridge.sv"
+//`include "counter.sv"
+//`include "fsm.sv"
+//`include "twidle_fac_gen.sv"
+//`include "Cache_memory.sv"
 /////////////////////////////////////////////////////////
 // Missing things:
 
 
 module top_fft #(parameter N = 2)(
     // AXI BUS
-    input               [15:0]  RDATA,
+    input               [31:0]  RDATA,
     input                       RVALID,
     output logic                RREADY,
     output logic        [N-1:0] RBURST,
-    output logic        [31:0]  WDATA,
+    output logic        [15:0]  WDATA,
     output logic                WVALID,
     input logic                 WREADY,
     output logic        [N-1:0] WBURST,
@@ -59,11 +59,11 @@ logic LOADED_DATA;
 logic ram_to_cache;
 logic [1:0] fsm_state;
 
-Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_ARDATA(RDATA),
-        .i_DATA_FROM_RAM(DATA_FROM_RAM), .i_ARVALID(RVALID), .i_AWREADY(WREADY),
+Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_AWDATA(WDATA),
+        .i_DATA_FROM_RAM(DATA_FROM_RAM), .i_AWVALID(WVALID), .i_ARREADY(RREADY),
         .i_CALC_END(CALC_END), .i_SAMPLES_NUMBER(SAMP_NUMBER),
-        .o_ARREADY(RREADY), .o_AWVALID(WVALID), .o_DATA_LOADED(LOADED_DATA), 
-        .o_AWDATA(WDATA), .o_SAMPLE_ram(RAM_in_axi), .o_AWBURST(WBURST), 
+        .o_AWREADY(WREADY), .o_ARVALID(RVALID), .o_DATA_LOADED(LOADED_DATA), 
+        .o_ARDATA(RDATA), .o_SAMPLE_ram(RAM_in_axi), .o_AWBURST(WBURST), 
         .o_ARBURST(RBURST), .o_SAMPLE_INDEX_ram(SAMPLE_INDEX_ram),
         .o_WRITE_ram(WRITE_ram), .o_READ_ram(READ_ram)
 );

@@ -20,7 +20,7 @@ from verif.scoreboard import Scoreboard
 async def basic_test(top_fft):
   """Basic functional test"""
   dut = top_fft
-  rst = n_Reset
+  #rst = n_Reset
   #Clock Initialization
   clock = Clock(dut.clk, 10, units="ns")
   cocotb.start_soon(clock.start())
@@ -35,9 +35,11 @@ async def basic_test(top_fft):
   cocotb.start_soon(monitor.capture())
 
   #DUT reset
-  dut.rst.value = 1
+  #dut.rst.value = 1
+  dut.n_Reset.value = 0
   await Timer(20, units="ns")
-  dut.rst.value = 0
+  #dut.rst.value = 0
+  dut.n_Reset.value = 1
 
   #Testing
   for _ in range(10):
