@@ -55,10 +55,11 @@ always_comb begin : p_fsm_comb
       o_AWREADY = 1'b1;
       o_WRITE_ram = 1'b1;
       o_SAMPLE_INDEX_ram = index_cnt;
-      o_SAMPLE_ram = o_ARDATA;
+      //o_SAMPLE_ram = o_ARDATA;
+      o_SAMPLE_ram = i_AWDATA;
       //o_ARBURST = ?? TODO
       if(index_cnt == (i_SAMPLES_NUMBER - 1)) begin
-        o_DATA_LOADED = 1'b1; //before change BK
+        o_DATA_LOADED = 1'b1; 
         next_state = bridge_WAIT;
         cnt_clr = 1'b1;
       end
@@ -78,7 +79,7 @@ always_comb begin : p_fsm_comb
       o_READ_ram = 1'b1;
       o_SAMPLE_INDEX_ram = index_cnt;
       o_ARDATA = i_DATA_FROM_RAM;
-      if (index_cnt == (i_SAMPLES_NUMBER - 1)) begin
+      if (index_cnt == (i_SAMPLES_NUMBER)) begin
         cnt_clr = 1'b1;
         next_state = bridge_IDLE;
       end

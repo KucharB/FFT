@@ -33,15 +33,15 @@ class AxiLiteMonitor:
     while True:
       await RisingEdge(self.clk)
 
-      if self.dut.AWVALID.value and self.dut.AWREADY.value:
-        addr = int(self.dut.AWADDR.value)
-        data = int(self.dut.WDATA.value)
-        self.transactions.append(("write", addr, data))
-        print(f"Monitor: Write to addr {addr} data {data}")
+      #if self.dut.AWVALID.value and self.dut.AWREADY.value:
+      #  addr = int(self.dut.AWADDR.value)
+      #  data = int(self.dut.WDATA.value)
+      #  self.transactions.append(("write", addr, data))
+      #  print(f"Monitor: Write to addr {addr} data {data}")
 
-      if self.dut.ARVALID.value and self.dut.ARREADY.value:
-        addr = int(self.dut.ARADDR.value)
-        print(f"Monitor: Read request addr {addr}")
+      #if self.dut.ARVALID.value and self.dut.ARREADY.value:
+      #  addr = int(self.dut.ARADDR.value)
+      #  print(f"Monitor: Read request addr {addr}")
 
       if self.dut.RVALID.value and self.dut.RREADY.value:
         data = int(self.dut.RDATA.value)
