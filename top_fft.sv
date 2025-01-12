@@ -137,7 +137,7 @@ counter k_counter(
         .clk(clk), 
         .ce(counter_k_en & counter_n_ovf), 
         .nrst(device_clear), 
-        .max_val(SAMP_NUMBER), 
+        .max_val(SAMP_NUMBER + 12'd1), 
         .o_data(SEND_ADDR), 
         .over(CALC_END)
 );

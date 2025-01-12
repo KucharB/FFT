@@ -31,8 +31,6 @@ class AxiLiteMonitor:
   async def monitor(self):
     """Monitoring data AXI4-Lite"""
     while True:
-      
-
       #if self.dut.AWVALID.value and self.dut.AWREADY.value:
       #  addr = int(self.dut.AWADDR.value)
       #  data = int(self.dut.WDATA.value)

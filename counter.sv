@@ -16,15 +16,14 @@ if (!nrst) begin
     over <= 1'b0;
 end
 else if (ce) begin
-    if(coun_val < (max_val-1))begin
     coun_val <= coun_val + 1;
-    over <= 1'b0;
-    end
-    else if(coun_val == max_val - 1) begin
+    if(coun_val == (max_val - 2)) begin
     over <= 1'b1;
     end
-    else
+    else over <= 1'b0;
+    if(coun_val == (max_val - 1)) begin
     coun_val <= 0;
+    end
 end
 end
 
