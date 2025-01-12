@@ -31,9 +31,12 @@ class AxiLiteDriver:
     #self.dut.AWADDR.value = addr
     #self.dut.AWVALID.velue = 1
     #self.dut.WVALID.value = 1
-    self.dut.WDATA.value = data
-
-
+    self.dut.WVALID.value = 1
+    await RisingEdge(self.clk)
+    for x in data:
+      self.dut.WDATA.value = x
+      await RisingEdge(self.clk)
+    self.dut.WVALID.value = 0
     #while not self.dut.AWREADY.value:
     #  await RisingEdge(self.clk)
 
@@ -50,8 +53,9 @@ class AxiLiteDriver:
     #self.dut.BREADY.value = 0
 
     #async def read(self, addr):
-  async def read(self):
-
+  async def read(self, samp_num):
+    data = [1, 2]
+    data.clear()
     """Reading operaton from slave via AXI4-Lite"""
      #self.dut.ARADDR.value = addr
      #self.dut.ARVALID.value = 1
@@ -60,10 +64,12 @@ class AxiLiteDriver:
 
     #self.dut.ARVALID.value = 0
 
-    #while not self.dut.RVALID.value:
-    #  await RisingEdge(self.clk)
-
-    data = int(self.dut.RDATA.value)
+    while not self.dut.RVALID.value:
+      await RisingEdge(self.clk)
+    await RisingEdge(self.clk)
+    for x in range(samp_num):
+      data.append(int(self.dut.RDATA.value))
+      await RisingEdge(self.clk)
     #self.dut.RREADY.value = 1
     #await RisingEdge(self.clk)
     #self.dut.RREADY.value = 0

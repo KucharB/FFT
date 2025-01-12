@@ -31,7 +31,7 @@ class AxiLiteMonitor:
   async def monitor(self):
     """Monitoring data AXI4-Lite"""
     while True:
-      await RisingEdge(self.clk)
+      
 
       #if self.dut.AWVALID.value and self.dut.AWREADY.value:
       #  addr = int(self.dut.AWADDR.value)
@@ -44,6 +44,9 @@ class AxiLiteMonitor:
       #  print(f"Monitor: Read request addr {addr}")
 
       if self.dut.RVALID.value and self.dut.RREADY.value:
-        data = int(self.dut.RDATA.value)
-        self.transactions.append(("read", addr, data))
-        print(f"Monitor: REad response addr {addr} data {data}")
+        await RisingEdge(self.dut.clk)
+        data = hex(self.dut.RDATA.value)
+        self.transactions.append(("read", data))
+        print(f"Monitor: Read response data {data}")
+      else:
+        await RisingEdge(self.clk)

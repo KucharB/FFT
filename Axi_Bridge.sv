@@ -45,6 +45,7 @@ always_comb begin : p_fsm_comb
   {o_ARDATA, o_SAMPLE_ram, o_AWBURST, o_ARBURST, o_SAMPLE_INDEX_ram} = 'x;
   case(state)
     bridge_IDLE : begin
+   
       o_AWREADY = 1'b1;
       if(i_AWVALID) begin
         next_state = bridge_WRITE;
@@ -82,6 +83,7 @@ always_comb begin : p_fsm_comb
       if (index_cnt == (i_SAMPLES_NUMBER)) begin
         cnt_clr = 1'b1;
         next_state = bridge_IDLE;
+        o_ARVALID = 1'b0;
       end
       else if (i_ARREADY) begin
         cnt_en = 1'b1;

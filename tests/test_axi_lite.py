@@ -22,10 +22,11 @@ async def test_axi_lite(dut):
   cocotb.start_soon(clock.start())
 
   driver = AxiLiteDriver(dut, dut.clk)
-  #monitor = AxiLiteMonitor(dut, dut.clk)
-  #cocotb.start_soon(monitor.monitor())
+  monitor = AxiLiteMonitor(dut, dut.clk)
+  cocotb.start_soon(monitor.monitor())
 
-  dut.SAMP_NUMBER.value = 2
+  data_to_write = [0xBEEF, 0xBABE, 0xBABA, 0xA9C6, 0xD56A]
+  dut.SAMP_NUMBER.value = len(data_to_write)
   dut.WVALID.value = 0
   dut.RREADY.value = 0
   dut.n_Reset.value = 0
@@ -34,25 +35,17 @@ async def test_axi_lite(dut):
   await Timer(20, units="ns")
   dut.n_Reset.value = 1
   await Timer(10, units="ns")
-  dut.WVALID.value = 1
-  await RisingEdge(dut.clk)
-  await driver.write(0xBEEF)
-  await RisingEdge(dut.clk)
-  await driver.write(0xBABE)
-  await RisingEdge(dut.clk)
-  dut.WVALID.value = 0
+  await driver.write(data_to_write)
   dut.RREADY.value = 1
   await RisingEdge(dut.clk)
   await RisingEdge(dut.clk)
   dut.CALC_END.value = 1
-  await RisingEdge(dut.clk)
-  await RisingEdge(dut.clk)
-  await RisingEdge(dut.clk)
-  data1 = await driver.read()
-  await RisingEdge(dut.clk)
-  data2 = await driver.read()
 
-  assert data1 == 0xBEEF, f"Expected 0xBEEF, got {data1}"
-  assert data2 == 0xBABE, f"Expected 0xBABE, got {data2}"
+  data1 = await driver.read(dut.SAMP_NUMBER.value)
+  #await RisingEdge(dut.clk)
+  #data2 = await driver.read()
+
+  assert data1 == data_to_write, f"Wrong data, got {data1}"
+  #assert data2 == 0xBABE, f"Expected 0xBABE, got {data2}"
 
   print("Test ended sucessfully")
