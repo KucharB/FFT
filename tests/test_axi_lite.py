@@ -26,6 +26,8 @@ async def test_axi_lite(dut):
   cocotb.start_soon(monitor.monitor())
 
   data_to_write = [0xBEEF, 0xBABE, 0xBABA, 0xA9C6, 0xD56A]
+  wrong_data = [0xBEEF, 0xBABE, 0xBABA, 0xA9C6, 0xD560]
+  print("Data to write: ", [hex(value) for value in data_to_write])
   dut.SAMP_NUMBER.value = len(data_to_write)
   dut.WVALID.value = 0
   dut.RREADY.value = 0
@@ -41,9 +43,11 @@ async def test_axi_lite(dut):
   await RisingEdge(dut.clk)
   dut.CALC_END.value = 1
 
+
   data1 = await driver.read(dut.SAMP_NUMBER.value)
   #await RisingEdge(dut.clk)
   #data2 = await driver.read()
+  print(f"data1 type: {type(data1)}" )
 
   assert data1 == data_to_write, f"Wrong data, got {data1}"
   #assert data2 == 0xBABE, f"Expected 0xBABE, got {data2}"
