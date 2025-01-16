@@ -82,6 +82,7 @@ always_comb begin : p_fsm_comb
 
   case(state)
     bridge_IDLE : begin
+      next_state = bridge_IDLE;
       o_AWREADY = 1'b1;
       if(i_AWVALID) begin
         next_state = bridge_ADDR_WRITE;
@@ -89,6 +90,7 @@ always_comb begin : p_fsm_comb
     end
 
     bridge_ADDR_WRITE : begin
+      next_state = bridge_ADDR_WRITE;
       o_AWREADY = 1'b1;
       if(!i_AWVALID) begin
       next_state = bridge_DATA_WRITE;
@@ -96,6 +98,7 @@ always_comb begin : p_fsm_comb
     end
 
     bridge_DATA_WRITE : begin //Zapis probek do RAMU
+    next_state = bridge_DATA_WRITE;
       o_WREADY = 1'b1;
       o_WRITE_ram = 1'b1;
       o_SAMPLE_INDEX_ram = (index_cnt / size);
@@ -111,14 +114,16 @@ always_comb begin : p_fsm_comb
     end
 
     bridge_WAIT : begin
+      next_state = bridge_WAIT;
       o_ARREADY = 1'b1;
       if(i_CALC_END && i_ARVALID) begin
         next_state = bridge_ADDR_READ;
       end
     end
 
-    // tu nizej do zrobienia TODO
+    // tu nizej do zrobienia, Dotestowania TODO
     bridge_ADDR_READ : begin
+      next_state = bridge_ADDR_READ;
       o_ARREADY = 1'b1;
       if(!i_ARVALID) begin
       next_state = bridge_DATA_READ;
@@ -126,11 +131,12 @@ always_comb begin : p_fsm_comb
     end
 
     bridge_DATA_READ : begin
+      next_state = bridge_DATA_READ;
       o_ARREADY = 1'b1;
       o_READ_ram = 1'b1;
       o_SAMPLE_INDEX_ram = index_cnt;
       o_RDATA = i_DATA_FROM_RAM;
-      if (index_cnt == (i_SAMPLES_NUMBER - 1)) begin
+      if (index_cnt == (size - 1)) begin
         o_RLAST = 1'b1;
         cnt_clr = 1'b1;
         next_state = bridge_IDLE;
@@ -144,6 +150,6 @@ always_comb begin : p_fsm_comb
   endcase
 end : p_fsm_comb
 
-assign current_state = next_state; //current state at the output, zakomentowac
+assign current_state = state; //current state at the output, zakomentowac
 
 endmodule
