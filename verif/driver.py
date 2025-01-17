@@ -24,9 +24,61 @@ class AxiLiteDriver:
   def __init__(self, dut, clk):
     self.dut = dut
     self.clk = clk
+  #initialization of axi slave
+  async def init(self, burst_len, burst_size):
+    self.dut.AWLEN.value = burst_len
+    self.dut.AWSIZE.value = burst_size
+    self.dut.AWBURST.value = 1
+    self.dut.AWID.value = 0
+    self.dut.BID.value = 0
+    self.dut.ARID.value = 0
+    self.dut.ARBURST.value = 1
 
+
+  async def write(self, addr, data, strb=0xF, burst_len=0):
+    self.dut.AWADDR.value = addr
+    self.dut.AWVALID.value = 1
+    self.dut.AWLEN.value = burst_len
+    await RisingEdge(self.clk)
+    while self.dut.AWREADY.value == 0:
+      await RisingEdge(self.clk)
+    self.dut.AWVALID = 0
+    self.dut.WDATA.value = data
+    self.dut.WSTRB.value = strb
+    self.dut.WVALID.value = 1
+    self.dut.WLAST.value = 1 if burst_len == 0 else 0
+    await RisingEdge(self.clk)
+    while self.dut.WREADY.value == 0:
+      await RisingEdge(self.clk)
+    self.dut.WVALID.value = 0
+    self.dut.WLAST.value = 0
+    while self.dut.BVALID.value == 0:
+      await RisingEdge(self.clk)
+    response = self.dut.BRESP.value
+    self.dut.BREADY.value = 1
+    await RisingEdge(self.clk)
+    self.dut.BREADY.value = 0
+    return response
+
+  async def read(self, addr, burst_len = 0):
+    self.dut.ARADDR.value = addr
+    self.dut.ARVALID.value = 1
+    self.dut.ARLEN.value = burst_len
+    await RisingEdge(self.clk)
+    while self.dut.ARREADY.value == 0:
+      await RisingEdge(self.clk)
+    self.dut.ARVALID.value = 0
+    data = []
+    for _ in range(burst_len + 1):
+      while self.dut.RVALID.value == 0:
+        await RisingEdge(self.clk)
+      data.append(self.dut.RDATA.value)
+      self.dut.RREADY.value = 1
+      await RisingEdge(self.clk)
+    self.dut.RREADY.value = 0
+    return data
   #async def write(self, addr, data):
-  async def write(self, data):
+  async def write1(self, data):
     """Writing operation into slave via AXI4-Lite"""
     #self.dut.AWADDR.value = addr
     #self.dut.AWVALID.velue = 1
@@ -53,7 +105,7 @@ class AxiLiteDriver:
     #self.dut.BREADY.value = 0
 
     #async def read(self, addr):
-  async def read(self, samp_num):
+  async def read1(self, samp_num):
     data = [1, 2]
     data.clear()
     """Reading operaton from slave via AXI4-Lite"""
