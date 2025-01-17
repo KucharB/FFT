@@ -108,7 +108,7 @@ always_comb begin : p_fsm_comb
         next_state = bridge_WAIT;
         cnt_clr = 1'b1;
       end
-      else if(i_AWVALID) begin
+      else if(i_WVALID) begin
         cnt_en = 1'b1;
       end
     end
