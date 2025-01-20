@@ -89,8 +89,8 @@ end : p_fsm_sync
 always_comb begin : p_fsm_comb
   {o_WREADY, o_RVALID, o_RLAST, o_AWREADY, o_ARREADY} = '0;
   {o_WRITE_ram, o_READ_ram, o_DATA_LOADED, o_BID, o_RID, o_BVALID} = '0;
-  {cnt_clr, cnt_en} = '0;
-  {o_RDATA, o_SAMPLE_ram, o_SAMPLE_INDEX_ram} = 'x;
+  {cnt_clr, cnt_en, o_SAMPLE_INDEX_ram} = '0;
+  {o_RDATA, o_SAMPLE_ram} = 'x;
 
   case(state)
     bridge_IDLE : begin
