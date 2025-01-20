@@ -142,7 +142,6 @@ always_comb begin : p_fsm_comb
     bridge_ADDR_READ : begin
       o_ARREADY = 1'b1;
       next_state = bridge_DATA_READ;
-      //end
     end
 
     bridge_DATA_READ : begin
@@ -153,13 +152,19 @@ always_comb begin : p_fsm_comb
       o_RDATA = i_DATA_FROM_RAM;
       o_RID = trans_id;
       if ((index_cnt/size) == length) begin
-        o_RLAST = 1'b1;
-        //cnt_clr = 1'b1;
-        next_state = bridge_IDLE;
+        next_state = bridge_READ_LAST;
       end
       else if (i_RREADY) begin
         cnt_en = 1'b1;
       end
+    end
+
+    bridge_READ_LAST : begin
+      o_RVALID = 1'b1;
+      o_READ_ram = 1'b1;
+      o_SAMPLE_INDEX_ram = (index_cnt / size);
+      o_RDATA = i_DATA_FROM_RAM;
+      next_state = bridge_IDLE;
     end
 
     default : next_state = bridge_IDLE;
