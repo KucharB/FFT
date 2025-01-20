@@ -154,7 +154,7 @@ always_comb begin : p_fsm_comb
       o_RID = trans_id;
       if ((index_cnt/size) == length) begin
         o_RLAST = 1'b1;
-        cnt_clr = 1'b1;
+        //cnt_clr = 1'b1;
         next_state = bridge_IDLE;
       end
       else if (i_RREADY) begin
