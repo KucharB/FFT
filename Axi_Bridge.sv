@@ -160,6 +160,7 @@ always_comb begin : p_fsm_comb
     end
 
     bridge_READ_LAST : begin
+      o_RLAST = 1'b1;
       o_RVALID = 1'b1;
       o_READ_ram = 1'b1;
       o_SAMPLE_INDEX_ram = (index_cnt / size);
