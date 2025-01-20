@@ -1,4 +1,4 @@
-`include "Axi_Bridge_fsm.sv"
+//`include "Axi_Bridge_fsm.sv"
 import Axi_Bridge_fsm::*;
 module Axi_Bridge #(
   parameter DATA_WIDTH = 32,
@@ -44,7 +44,7 @@ module Axi_Bridge #(
   output logic o_DATA_LOADED,
   output logic [15:0] o_SAMPLE_ram,
   output logic [11:0] o_SAMPLE_INDEX_ram,
-  output logic o_WRITE_ram, o_READ_ram,
+  output logic o_WRITE_ram, o_READ_ram
   //output bridge_fsm current_state // - ZAKOMENTOWAC
 );
 
@@ -75,13 +75,13 @@ always_ff @(posedge i_clk or negedge i_rstn) begin : p_fsm_sync
       trans_id <= i_AWID; //przypisanie ID transakcji
       index_cnt <= i_AWADDR;
       size <= (1<<i_AWSIZE); //zdekodowanie AxSIZE - 2^AxSIZE, 1 w prawo przesuniecie to 2
-      length <= i_AWLEN + 1; //zgodnie z dokumentacja
+      length <= i_AWLEN;
     end
 
     if(next_state == bridge_ADDR_READ && i_ARBURST == 2'b01) begin
       index_cnt <= i_ARADDR;
       size <= (1<<i_ARSIZE);
-      length <= i_AWLEN + 1;
+      length <= i_ARLEN;
     end
   end
 end : p_fsm_sync
@@ -115,9 +115,9 @@ always_comb begin : p_fsm_comb
       o_WRITE_ram = 1'b1;
       o_SAMPLE_INDEX_ram = (index_cnt / size);
       o_SAMPLE_ram = i_WDATA;
-      if(index_cnt == (size - 1)) begin
+      if(index_cnt == length/size) begin
         o_DATA_LOADED = 1'b1; 
-        next_state = bridge_WAIT;
+        next_state = bridge_WRITE_RESPONSE;
         cnt_clr = 1'b1;
       end
       else if(i_WVALID) begin
@@ -158,7 +158,7 @@ always_comb begin : p_fsm_comb
       o_SAMPLE_INDEX_ram = index_cnt;
       o_RDATA = i_DATA_FROM_RAM;
       o_RID = trans_id;
-      if (index_cnt == (size - 1)) begin
+      if (index_cnt == length/size) begin
         o_RLAST = 1'b1;
         cnt_clr = 1'b1;
         next_state = bridge_IDLE;

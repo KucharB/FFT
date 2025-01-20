@@ -25,41 +25,31 @@ class AxiLiteDriver:
     self.dut = dut
     self.clk = clk
   #initialization of axi slave
-  async def init(self, burst_len, burst_size):
+  #async def init(self, burst_len, burst_size):
+  
+#burst_len liczba próbek - 1
+
+  async def write(self, addr, data, strb=0x3, burst_len=0, burst_size=1):
+    burst_cnt = 0
     self.dut.AWLEN.value = burst_len
     self.dut.AWSIZE.value = burst_size
     self.dut.AWBURST.value = 1
     self.dut.AWID.value = 0
-    self.dut.BID.value = 0
-    self.dut.ARID.value = 0
-    self.dut.ARBURST.value = 1
-
-
-  async def write(self, addr, data, strb=0xF, burst_len=0):
     self.dut.AWADDR.value = addr
     self.dut.AWVALID.value = 1
-    self.dut.AWLEN.value = burst_len
+    await RisingEdge(self.clk)
     await RisingEdge(self.clk)
     while self.dut.AWREADY.value == 0:
       await RisingEdge(self.clk)
     self.dut.AWVALID = 0
-    self.dut.WDATA.value = data
-    self.dut.WSTRB.value = strb
-    self.dut.WVALID.value = 1
-    self.dut.WLAST.value = 1 if burst_len == 0 else 0
-    await RisingEdge(self.clk)
-    while self.dut.WREADY.value == 0:
+    for x in data:
+      self.dut.WDATA.value = x
+      self.dut.WSTRB.value = strb
+      self.dut.WVALID.value = 1
+      self.dut.WLAST.value = 1 if burst_len - burst_cnt == 0 else 0
+      burst_cnt = burst_cnt + 1
       await RisingEdge(self.clk)
-    self.dut.WVALID.value = 0
-    self.dut.WLAST.value = 0
-    while self.dut.BVALID.value == 0:
-      await RisingEdge(self.clk)
-    response = self.dut.BRESP.value
-    self.dut.BREADY.value = 1
-    await RisingEdge(self.clk)
-    self.dut.BREADY.value = 0
-    return response
-
+    
   async def read(self, addr, burst_len = 0):
     self.dut.ARADDR.value = addr
     self.dut.ARVALID.value = 1

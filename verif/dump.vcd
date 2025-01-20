@@ -1,5 +1,5 @@
 $date
-	Sun Jan 12 15:28:06 2025
+	Mon Jan 20 21:33:22 2025
 $end
 $version
 	Icarus Verilog
@@ -10,63 +10,109 @@ $end
 $scope module top_axi_lite $end
 $var wire 1 ! WRITE_ram $end
 $var wire 1 " WREADY $end
-$var wire 2 # WBURST [1:0] $end
-$var wire 12 $ SAMPLE_INDEX_ram [11:0] $end
-$var wire 1 % RVALID $end
-$var wire 1 & READ_ram $end
-$var wire 32 ' RDATA [31:0] $end
-$var wire 2 ( RBURST [1:0] $end
+$var wire 12 # SAMPLE_INDEX_ram [11:0] $end
+$var wire 1 $ RVALID $end
+$var wire 1 % RLAST $end
+$var wire 2 & RID [1:0] $end
+$var wire 1 ' READ_ram $end
+$var wire 32 ( RDATA [31:0] $end
 $var wire 16 ) RAM_in_axi [15:0] $end
 $var wire 1 * LOADED_DATA $end
 $var wire 32 + DATA_FROM_RAM [31:0] $end
-$var reg 1 , CALC_END $end
-$var reg 1 - RREADY $end
-$var reg 12 . SAMP_NUMBER [11:0] $end
-$var reg 16 / WDATA [15:0] $end
-$var reg 1 0 WRITE_TO_CACHE $end
-$var reg 1 1 WVALID $end
-$var reg 1 2 clk $end
-$var reg 1 3 n_Reset $end
+$var wire 1 , BVALID $end
+$var wire 2 - BID [1:0] $end
+$var wire 1 . AWREADY $end
+$var wire 1 / ARREADY $end
+$var parameter 32 0 DATA_WIDTH $end
+$var parameter 32 1 ID_R_WIDTH $end
+$var parameter 32 2 ID_W_WIDTH $end
+$var reg 12 3 ARADDR [11:0] $end
+$var reg 2 4 ARBURST [1:0] $end
+$var reg 2 5 ARID [1:0] $end
+$var reg 8 6 ARLEN [7:0] $end
+$var reg 3 7 ARSIZE [2:0] $end
+$var reg 1 8 ARVALID $end
+$var reg 12 9 AWADDR [11:0] $end
+$var reg 2 : AWBURST [1:0] $end
+$var reg 2 ; AWID [1:0] $end
+$var reg 8 < AWLEN [7:0] $end
+$var reg 3 = AWSIZE [2:0] $end
+$var reg 1 > AWVALID $end
+$var reg 1 ? BREADY $end
+$var reg 1 @ CALC_END $end
+$var reg 1 A RREADY $end
+$var reg 12 B SAMP_NUMBER [11:0] $end
+$var reg 16 C WDATA [15:0] $end
+$var reg 1 D WLAST $end
+$var reg 1 E WRITE_TO_CACHE $end
+$var reg 2 F WSTRB [1:0] $end
+$var reg 1 G WVALID $end
+$var reg 1 H clk $end
+$var reg 1 I n_Reset $end
 $scope module ram1 $end
-$var wire 12 4 READ_ADDRESS [11:0] $end
-$var wire 12 5 SEND_ADDR [11:0] $end
-$var wire 32 6 SEND_DATA [31:0] $end
-$var wire 1 2 clk $end
-$var wire 1 7 mode $end
-$var wire 1 0 write_to_cache $end
+$var wire 12 J READ_ADDRESS [11:0] $end
+$var wire 12 K SEND_ADDR [11:0] $end
+$var wire 32 L SEND_DATA [31:0] $end
+$var wire 1 H clk $end
+$var wire 1 M mode $end
+$var wire 1 E write_to_cache $end
 $var wire 1 ! axi_write $end
-$var wire 1 & axi_read $end
-$var wire 16 8 axi_data_in [15:0] $end
-$var wire 12 9 axi_adr_in [11:0] $end
-$var reg 16 : READ_DATA [15:0] $end
-$var reg 32 ; axi_data_out [31:0] $end
+$var wire 1 ' axi_read $end
+$var wire 16 N axi_data_in [15:0] $end
+$var wire 12 O axi_adr_in [11:0] $end
+$var reg 16 P READ_DATA [15:0] $end
+$var reg 32 Q axi_data_out [31:0] $end
 $upscope $end
 $scope module slave $end
-$var wire 1 - i_ARREADY $end
-$var wire 16 < i_AWDATA [15:0] $end
-$var wire 1 1 i_AWVALID $end
-$var wire 1 , i_CALC_END $end
-$var wire 32 = i_DATA_FROM_RAM [31:0] $end
-$var wire 12 > i_SAMPLES_NUMBER [11:0] $end
-$var wire 1 2 i_clk $end
-$var wire 1 3 i_rstn $end
-$var wire 1 ? current_state $end
-$var parameter 32 @ DATA_WIDTH $end
-$var reg 12 A index_cnt [11:0] $end
-$var reg 2 B next_state [1:0] $end
-$var reg 2 C o_ARBURST [1:0] $end
-$var reg 32 D o_ARDATA [31:0] $end
-$var reg 1 % o_ARVALID $end
-$var reg 2 E o_AWBURST [1:0] $end
-$var reg 1 " o_AWREADY $end
+$var wire 12 R i_ARADDR [11:0] $end
+$var wire 2 S i_ARBURST [1:0] $end
+$var wire 2 T i_ARID [1:0] $end
+$var wire 8 U i_ARLEN [7:0] $end
+$var wire 3 V i_ARSIZE [2:0] $end
+$var wire 1 8 i_ARVALID $end
+$var wire 12 W i_AWADDR [11:0] $end
+$var wire 2 X i_AWBURST [1:0] $end
+$var wire 2 Y i_AWID [1:0] $end
+$var wire 8 Z i_AWLEN [7:0] $end
+$var wire 3 [ i_AWSIZE [2:0] $end
+$var wire 1 > i_AWVALID $end
+$var wire 1 ? i_BREADY $end
+$var wire 1 @ i_CALC_END $end
+$var wire 32 \ i_DATA_FROM_RAM [31:0] $end
+$var wire 1 A i_RREADY $end
+$var wire 12 ] i_SAMPLES_NUMBER [11:0] $end
+$var wire 16 ^ i_WDATA [15:0] $end
+$var wire 1 D i_WLAST $end
+$var wire 2 _ i_WSTRB [1:0] $end
+$var wire 1 G i_WVALID $end
+$var wire 1 H i_clk $end
+$var wire 1 I i_rstn $end
+$var wire 1 ` current_state $end
+$var parameter 32 a DATA_WIDTH $end
+$var parameter 32 b ID_R_WIDTH $end
+$var parameter 32 c ID_W_WIDTH $end
+$var reg 12 d index_cnt [11:0] $end
+$var reg 8 e length [7:0] $end
+$var reg 3 f next_state [2:0] $end
+$var reg 1 / o_ARREADY $end
+$var reg 1 . o_AWREADY $end
+$var reg 2 g o_BID [1:0] $end
+$var reg 1 , o_BVALID $end
 $var reg 1 * o_DATA_LOADED $end
-$var reg 1 & o_READ_ram $end
-$var reg 12 F o_SAMPLE_INDEX_ram [11:0] $end
-$var reg 16 G o_SAMPLE_ram [15:0] $end
+$var reg 32 h o_RDATA [31:0] $end
+$var reg 1 ' o_READ_ram $end
+$var reg 2 i o_RID [1:0] $end
+$var reg 1 % o_RLAST $end
+$var reg 1 $ o_RVALID $end
+$var reg 12 j o_SAMPLE_INDEX_ram [11:0] $end
+$var reg 16 k o_SAMPLE_ram [15:0] $end
+$var reg 1 " o_WREADY $end
 $var reg 1 ! o_WRITE_ram $end
-$var reg 2 H state [1:0] $end
-$var reg 1 I cnt_clr $end
-$var reg 1 J cnt_en $end
+$var reg 3 l size [2:0] $end
+$var reg 3 m state [2:0] $end
+$var reg 2 n trans_id [1:0] $end
+$var reg 1 o cnt_clr $end
+$var reg 1 p cnt_en $end
 $scope begin p_fsm_comb $end
 $upscope $end
 $scope begin p_fsm_sync $end
@@ -76,288 +122,211 @@ $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b100000 @
+b10 c
+b10 b
+b100000 a
+b10 2
+b10 1
+b100000 0
 $end
 #0
 $dumpvars
-0J
+0p
+0o
+bx n
+b0 m
+b0 l
+bx k
+bx j
+b0 i
+bx h
+b0 g
+b0 f
+b0 e
+b0 d
+0`
+bx _
+bx ^
+b100 ]
+bx \
+bx [
+bx Z
+bx Y
+bx X
+bx W
+bx V
+bx U
+bx T
+bx S
+bx R
+bx Q
+bx P
+bx O
+bx N
+1M
+bz L
+bz K
+bz J
 0I
-b0 H
-bx G
+1H
+xG
 bx F
-bx E
-bx D
+0E
+xD
 bx C
-b0 B
-b0 A
-0?
-b101 >
+b100 B
+xA
+0@
+x?
+x>
 bx =
 bx <
 bx ;
 bx :
 bx 9
-bx 8
-17
-bz 6
-bz 5
-bz 4
-03
-12
-01
-00
-bx /
-b101 .
-0-
+x8
+bx 7
+bx 6
+bx 5
+bx 4
+bx 3
+0/
+1.
+b0 -
 0,
 bx +
 0*
 bx )
 bx (
-bx '
-0&
+0'
+b0 &
 0%
-bx $
+0$
 bx #
-1"
+0"
 0!
 $end
 #5000
-02
+0H
 #10000
-12
+1H
 #15000
-02
+0H
 #20000
-12
-13
-#25000
-02
-#30000
-b1011111011101111 )
-b1011111011101111 8
-b1011111011101111 G
-b1011111011101111 /
-b1011111011101111 <
-1J
-b0 $
-b0 9
-b0 F
-1!
-b10 H
-b10 B
-1"
-12
-11
-#35000
-02
-#40000
-b1011101010111110 /
-b1011101010111110 <
-b1011101010111110 )
-b1011101010111110 8
-b1011101010111110 G
-b1 $
-b1 9
-b1 F
-1J
-1"
-1!
-b1 A
-12
-#45000
-02
-#50000
-b1011101010111010 /
-b1011101010111010 <
-b1011101010111010 )
-b1011101010111010 8
-b1011101010111010 G
-b10 $
-b10 9
-b10 F
-1J
-1"
-1!
-b10 A
-12
-#55000
-02
-#60000
-b1010100111000110 /
-b1010100111000110 <
-b1010100111000110 )
-b1010100111000110 8
-b1010100111000110 G
-b11 $
-b11 9
-b11 F
-1J
-1"
-1!
-b11 A
-12
-#65000
-02
-#70000
-b1101010101101010 /
-b1101010101101010 <
+1H
 1I
-b11 B
-1*
-b1101010101101010 )
-b1101010101101010 8
-b1101010101101010 G
-b100 $
-b100 9
-b100 F
-0J
-1"
+#25000
+0H
+#30000
+1`
+b1000 e
+b10 l
+b0 n
+b1 m
+b1 f
+1.
+1H
+1>
+b0 9
+b0 W
+b0 ;
+b0 Y
+b1 :
+b1 X
+b1 =
+b1 [
+b1000 <
+b1000 Z
+#35000
+0H
+#40000
+b10 f
+1.
+0D
+1G
+b11 F
+b11 _
+b1011111011101111 C
+b1011111011101111 ^
+0>
+1H
+#45000
+0H
+#50000
+b1011101010111110 C
+b1011101010111110 ^
+1p
+b1011101010111110 )
+b1011101010111110 N
+b1011101010111110 k
+b0 #
+b0 O
+b0 j
 1!
-b100 A
-12
+1"
+0.
+0`
+b10 m
+1H
+#55000
+0H
+#60000
+b1011101010111010 C
+b1011101010111010 ^
+b1011101010111010 )
+b1011101010111010 N
+b1011101010111010 k
+b1 #
+b1 O
+b1 j
+1p
+1!
+1"
+b10 d
+1H
+#65000
+0H
+#70000
+b1010100111000110 C
+b1010100111000110 ^
+1o
+b11 f
+1*
+b1010100111000110 )
+b1010100111000110 N
+b1010100111000110 k
+b10 #
+b10 O
+b10 j
+0p
+1!
+1"
+b100 d
+1H
 #75000
-02
+0H
 #80000
-1-
-01
+1,
 bx )
-bx 8
-bx G
-bx $
-bx 9
-bx F
-0I
-0"
+bx N
+bx k
+bx #
+bx O
+bx j
+0o
 0!
 0*
-1?
-b0 A
-b11 H
-12
+0"
+1`
+b0 d
+b11 m
+1H
 #85000
-02
+0H
 #90000
-12
+1H
 #95000
-02
+0H
 #100000
-b1 B
-1,
-12
-#105000
-02
-#110000
-1J
-b0 $
-b0 9
-b0 F
-1&
-1%
-b1 H
-12
-#115000
-02
-#120000
-b1011111011101111 '
-b1011111011101111 D
-b1 $
-b1 9
-b1 F
-1J
-1%
-1&
-b1011111011101111 +
-b1011111011101111 ;
-b1011111011101111 =
-b1 A
-12
-#125000
-02
-#130000
-b1011101010111110 '
-b1011101010111110 D
-b10 $
-b10 9
-b10 F
-1J
-1%
-1&
-b1011101010111110 +
-b1011101010111110 ;
-b1011101010111110 =
-b10 A
-12
-#135000
-02
-#140000
-b1011101010111010 '
-b1011101010111010 D
-b11 $
-b11 9
-b11 F
-1J
-1%
-1&
-b1011101010111010 +
-b1011101010111010 ;
-b1011101010111010 =
-b11 A
-12
-#145000
-02
-#150000
-b1010100111000110 '
-b1010100111000110 D
-b100 $
-b100 9
-b100 F
-1J
-1%
-1&
-b1010100111000110 +
-b1010100111000110 ;
-b1010100111000110 =
-b100 A
-12
-#155000
-02
-#160000
-b0 B
-1I
-b1101010101101010 '
-b1101010101101010 D
-b101 $
-b101 9
-b101 F
-0J
-0%
-1&
-b1101010101101010 +
-b1101010101101010 ;
-b1101010101101010 =
-b101 A
-12
-#165000
-02
-#170000
-1"
-bx '
-bx D
-bx $
-bx 9
-bx F
-0I
-0&
-0?
-bx +
-bx ;
-bx =
-b0 A
-b0 H
-12
-#175000
-02
-#180000
-12
-#180001
+1H
+#100001
