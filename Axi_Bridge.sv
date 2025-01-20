@@ -102,11 +102,8 @@ always_comb begin : p_fsm_comb
     end
 
     bridge_ADDR_WRITE : begin
-      //next_state = bridge_ADDR_WRITE;
       o_AWREADY = 1'b1;
-     // if(!i_AWVALID) begin
       next_state = bridge_DATA_WRITE;
-      //end
     end
 
     bridge_DATA_WRITE : begin //Zapis probek do RAMU
@@ -142,11 +139,8 @@ always_comb begin : p_fsm_comb
       end
     end
 
-    // tu nizej do zrobienia, Dotestowania TODO
     bridge_ADDR_READ : begin
-      //next_state = bridge_ADDR_READ;
       o_ARREADY = 1'b1;
-      //if(!i_ARVALID) begin
       next_state = bridge_DATA_READ;
       //end
     end
@@ -155,7 +149,7 @@ always_comb begin : p_fsm_comb
       next_state = bridge_DATA_READ;
       o_RVALID = 1'b1;
       o_READ_ram = 1'b1;
-      o_SAMPLE_INDEX_ram = index_cnt;
+      o_SAMPLE_INDEX_ram = (index_cnt / size);
       o_RDATA = i_DATA_FROM_RAM;
       o_RID = trans_id;
       if ((index_cnt/size) == length) begin
