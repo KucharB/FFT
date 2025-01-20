@@ -15,7 +15,7 @@ module Axi_Bridge #(
   // READ DATA CHANNEL
   input i_RREADY,
   output logic [DATA_WIDTH-1:0] o_RDATA,
-  output [ID_R_WIDTH-1:0] o_RID,
+  output logic [ID_R_WIDTH-1:0] o_RID,
   output logic o_RVALID, o_RLAST,
   // ADDRESS WRITE CHANNEL
   input [11:0] i_AWADDR,
@@ -33,7 +33,7 @@ module Axi_Bridge #(
   input [ID_R_WIDTH-1:0] i_ARID,
   input i_ARVALID,
   output logic o_ARREADY,
-  // RESPONSE CHANNEL
+  //WRITE RESPONSE CHANNEL
   input i_BREADY,
   output logic o_BVALID,
   output logic [ID_W_WIDTH-1:0] o_BID,
@@ -53,12 +53,14 @@ logic [11:0] index_cnt;
 bit cnt_en, cnt_clr;
 logic [2:0] size;
 logic [7:0] length;
+logic [ID_W_WIDTH-1:0] trans_id;
 
 // FSM
 always_ff @(posedge i_clk or negedge i_rstn) begin : p_fsm_sync
   if (~i_rstn) begin
     state <= bridge_IDLE;
     {index_cnt, size, length} <= '0;
+    trans_id <= 'x;
   end
   else begin
     state <= next_state;
@@ -70,6 +72,7 @@ always_ff @(posedge i_clk or negedge i_rstn) begin : p_fsm_sync
     end                              // INCR burst addressing
 
     if(next_state == bridge_ADDR_WRITE && i_AWBURST == 2'b01) begin
+      trans_id <= i_AWID; //przypisanie ID transakcji
       index_cnt <= i_AWADDR;
       size <= (1<<i_AWSIZE); //zdekodowanie AxSIZE - 2^AxSIZE, 1 w prawo przesuniecie to 2
       length <= i_AWLEN + 1; //zgodnie z dokumentacja
@@ -85,7 +88,7 @@ end : p_fsm_sync
 
 always_comb begin : p_fsm_comb
   {o_WREADY, o_RVALID, o_RLAST, o_AWREADY, o_ARREADY} = '0;
-  {o_WRITE_ram, o_READ_ram, o_DATA_LOADED} = '0;
+  {o_WRITE_ram, o_READ_ram, o_DATA_LOADED, o_BID, o_RID, o_BVALID} = '0;
   {cnt_clr, cnt_en} = '0;
   {o_RDATA, o_SAMPLE_ram, o_SAMPLE_INDEX_ram} = 'x;
 
@@ -122,6 +125,15 @@ always_comb begin : p_fsm_comb
       end
     end
 
+    bridge_WRITE_RESPONSE : begin
+      next_state = bridge_WRITE_RESPONSE;
+      o_BVALID = 1'b1;
+      o_BID = trans_id;
+      if(i_BREADY) begin
+        next_state = bridge_WAIT;
+      end
+    end
+
     bridge_WAIT : begin
       next_state = bridge_WAIT;
       o_ARREADY = 1'b1;
@@ -145,6 +157,7 @@ always_comb begin : p_fsm_comb
       o_READ_ram = 1'b1;
       o_SAMPLE_INDEX_ram = index_cnt;
       o_RDATA = i_DATA_FROM_RAM;
+      o_RID = trans_id;
       if (index_cnt == (size - 1)) begin
         o_RLAST = 1'b1;
         cnt_clr = 1'b1;
