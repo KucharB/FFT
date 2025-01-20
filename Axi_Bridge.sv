@@ -144,16 +144,16 @@ always_comb begin : p_fsm_comb
 
     // tu nizej do zrobienia, Dotestowania TODO
     bridge_ADDR_READ : begin
-      next_state = bridge_ADDR_READ;
+      //next_state = bridge_ADDR_READ;
       o_ARREADY = 1'b1;
-      if(!i_ARVALID) begin
+      //if(!i_ARVALID) begin
       next_state = bridge_DATA_READ;
-      end
+      //end
     end
 
     bridge_DATA_READ : begin
       next_state = bridge_DATA_READ;
-      o_ARREADY = 1'b1;
+      o_RVALID = 1'b1;
       o_READ_ram = 1'b1;
       o_SAMPLE_INDEX_ram = index_cnt;
       o_RDATA = i_DATA_FROM_RAM;
