@@ -2,7 +2,8 @@
 import Axi_Bridge_fsm::*;
 module Axi_Bridge #(
   parameter DATA_WIDTH = 32,
-  parameter ID_W_WIDTH = 2 //obczaic szerokosc
+  parameter ID_W_WIDTH = 2, //obczaic szerokosc
+  parameter ID_R_WIDTH = 2
 )
 (
   input i_clk, i_rstn,
@@ -13,7 +14,7 @@ module Axi_Bridge #(
   output logic o_WREADY,
   // READ DATA CHANNEL
   input i_RREADY,
-  output logic [31:0] o_RDATA,
+  output logic [DATA_WIDTH-1:0] o_RDATA,
   output logic o_RVALID, o_RLAST,
   // ADDRESS WRITE CHANNEL
   input [11:0] i_AWADDR,
@@ -28,7 +29,7 @@ module Axi_Bridge #(
   input [7:0] i_ARLEN,
   input [2:0] i_ARSIZE,
   input [1:0] i_ARBURST,
-  input [ID_W_WIDTH-1:0] i_ARID,
+  input [ID_R_WIDTH-1:0] i_ARID,
   input i_ARVALID,
   output logic o_ARREADY,
   // RESPONSE CHANNEL
