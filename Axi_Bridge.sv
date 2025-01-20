@@ -115,7 +115,7 @@ always_comb begin : p_fsm_comb
       o_WRITE_ram = 1'b1;
       o_SAMPLE_INDEX_ram = (index_cnt / size);
       o_SAMPLE_ram = i_WDATA;
-      if(index_cnt == length/size) begin
+      if(i_WLAST || ((index_cnt/size) == length)) begin
         o_DATA_LOADED = 1'b1; 
         next_state = bridge_WRITE_RESPONSE;
         cnt_clr = 1'b1;
@@ -158,7 +158,7 @@ always_comb begin : p_fsm_comb
       o_SAMPLE_INDEX_ram = index_cnt;
       o_RDATA = i_DATA_FROM_RAM;
       o_RID = trans_id;
-      if (index_cnt == length/size) begin
+      if ((index_cnt/size) == length) begin
         o_RLAST = 1'b1;
         cnt_clr = 1'b1;
         next_state = bridge_IDLE;
