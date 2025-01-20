@@ -15,6 +15,7 @@ module Axi_Bridge #(
   // READ DATA CHANNEL
   input i_RREADY,
   output logic [DATA_WIDTH-1:0] o_RDATA,
+  output [ID_R_WIDTH-1:0] o_RID,
   output logic o_RVALID, o_RLAST,
   // ADDRESS WRITE CHANNEL
   input [11:0] i_AWADDR,
