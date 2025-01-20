@@ -29,7 +29,7 @@ class AxiLiteDriver:
   
 #burst_len liczba próbek - 1
 
-  async def write(self, addr, data, strb=0x3, burst_len=0, burst_size=1):
+  async def write(self, addr, data, strb=0x3, burst_len=0, burst_size = 1):
     burst_cnt = 0
     self.dut.AWLEN.value = burst_len
     self.dut.AWSIZE.value = burst_size
@@ -49,21 +49,40 @@ class AxiLiteDriver:
       self.dut.WLAST.value = 1 if burst_len - burst_cnt == 0 else 0
       burst_cnt = burst_cnt + 1
       await RisingEdge(self.clk)
-    
-  async def read(self, addr, burst_len = 0):
+    while self.dut.WREADY.value == 0:
+      await RisingEdge(self.clk)
+    self.dut.WVALID.value = 0
+    self.dut.WLAST.value = 0
+    self.dut.BREADY.value = 1
+    while self.dut.BVALID.value == 0:
+      await RisingEdge(self.clk)
+    await RisingEdge(self.clk)
+    self.dut.BREADY.value = 0
+    #while self.dut.WREADY.value == 0:
+    #  await RisingEdge(self.clk)
+    self.dut.WVALID.value = 0
+    self.dut.WLAST.value = 0
+
+  async def read(self, addr, burst_len = 0, burst_size = 1):
+    self.dut.ARLEN.value = burst_len
+    self.dut.ARSIZE.value = burst_size
+    self.dut.ARBURST.value = 1
+    self.dut.ARID.value = 0
     self.dut.ARADDR.value = addr
     self.dut.ARVALID.value = 1
     self.dut.ARLEN.value = burst_len
     await RisingEdge(self.clk)
     while self.dut.ARREADY.value == 0:
-      await RisingEdge(self.clk)
+     await RisingEdge(self.clk)
     self.dut.ARVALID.value = 0
     data = []
-    for _ in range(burst_len + 1):
-      while self.dut.RVALID.value == 0:
+    self.dut.RREADY.value = 1
+    #await RisingEdge(self.clk)
+    while self.dut.RVALID.value == 0:
         await RisingEdge(self.clk)
+    await RisingEdge(self.clk)
+    for _ in range(burst_len + 1):
       data.append(self.dut.RDATA.value)
-      self.dut.RREADY.value = 1
       await RisingEdge(self.clk)
     self.dut.RREADY.value = 0
     return data
