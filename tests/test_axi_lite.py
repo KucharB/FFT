@@ -22,8 +22,8 @@ async def test_axi_lite(dut):
   cocotb.start_soon(clock.start())
 
   driver = AxiLiteDriver(dut, dut.clk)
-  #monitor = AxiLiteMonitor(dut, dut.clk)
-  #cocotb.start_soon(monitor.monitor())
+  monitor = AxiLiteMonitor(dut, dut.clk)
+  cocotb.start_soon(monitor.monitor())
 
   data_to_write = [0xBEEF, 0xBABE, 0xBABA, 0xA9C6, 0xD560, 0xEDA4]
   wrong_data = [0xBEEF, 0xBABE, 0xBABA, 0xA9C6, 0xD560]
@@ -41,7 +41,7 @@ async def test_axi_lite(dut):
   await RisingEdge(dut.clk)
   dut.CALC_END.value = 1
   data1 = await driver.read(0, len(data_to_write)-1, 1)
-  print(data1)
+  print("Data get by driver", [hex(value) for value in data1])
 
   assert data1 == data_to_write, f"Wrong data, got {data1}"
   #assert data2 == 0xBABE, f"Expected 0xBABE, got {data2}"

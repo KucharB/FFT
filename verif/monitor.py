@@ -43,8 +43,10 @@ class AxiLiteMonitor:
 
       if self.dut.RVALID.value and self.dut.RREADY.value:
         await RisingEdge(self.dut.clk)
-        data = hex(self.dut.RDATA.value)
-        self.transactions.append(("read", data))
-        print(f"Monitor: Read response data {data}")
+        while self.dut.RVALID.value and self.dut.RREADY.value:
+          data = hex(self.dut.RDATA.value)
+          self.transactions.append(("read", data))
+          print(f"Monitor: Read response data {data}")
+          await RisingEdge(self.dut.clk)
       else:
         await RisingEdge(self.clk)
