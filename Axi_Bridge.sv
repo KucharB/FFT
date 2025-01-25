@@ -50,6 +50,7 @@ module Axi_Bridge #(
 
 bridge_fsm state, next_state;
 logic [11:0] index_cnt;
+logic [11:0] data_in_burst_cnt;
 bit cnt_en, cnt_clr;
 logic [2:0] size;
 logic [7:0] length;
@@ -60,15 +61,18 @@ always_ff @(posedge i_clk or negedge i_rstn) begin : p_fsm_sync
   if (~i_rstn) begin
     state <= bridge_IDLE;
     {index_cnt, size, length} <= '0;
+    data_in_burst_cnt <= '0;
     trans_id <= 'x;
   end
   else begin
     state <= next_state;
     if(cnt_clr) begin
       index_cnt <= 12'h0;
+      data_in_burst_cnt <= 12'h0;
     end
     else if(cnt_en) begin
       index_cnt <= index_cnt + size; //size from AxSIZE
+      data_in_burst_cnt <= data_in_burst_cnt + size;
     end                              // INCR burst addressing
 
     if(next_state == bridge_ADDR_WRITE && i_AWBURST == 2'b01) begin
@@ -96,9 +100,13 @@ always_comb begin : p_fsm_comb
     bridge_IDLE : begin
       next_state = bridge_IDLE;
       o_AWREADY = 1'b1;
+      o_ARREADY = 1'b1;//
       if(i_AWVALID) begin
         next_state = bridge_ADDR_WRITE;
       end
+      if(i_CALC_END && i_ARVALID) begin//
+       next_state = bridge_ADDR_READ;//
+     end
     end
 
     bridge_ADDR_WRITE : begin
@@ -112,7 +120,7 @@ always_comb begin : p_fsm_comb
       o_WRITE_ram = 1'b1;
       o_SAMPLE_INDEX_ram = (index_cnt / size);
       o_SAMPLE_ram = i_WDATA;
-      if((index_cnt/size) == length) begin
+      if((data_in_burst_cnt/size) == length) begin//
         o_DATA_LOADED = 1'b1; 
         next_state = bridge_WRITE_RESPONSE;
         cnt_clr = 1'b1;
@@ -127,17 +135,18 @@ always_comb begin : p_fsm_comb
       o_BVALID = 1'b1;
       o_BID = trans_id;
       if(i_BREADY) begin
-        next_state = bridge_WAIT;
+        //next_state = bridge_WAIT;
+        next_state = bridge_IDLE;
       end
     end
 
-    bridge_WAIT : begin
-      next_state = bridge_WAIT;
-      o_ARREADY = 1'b1;
-      if(i_CALC_END && i_ARVALID) begin
-        next_state = bridge_ADDR_READ;
-      end
-    end
+//    bridge_WAIT : begin
+//      next_state = bridge_WAIT;
+//      o_ARREADY = 1'b1;
+//      if(i_CALC_END && i_ARVALID) begin
+//        next_state = bridge_ADDR_READ;
+//      end
+//    end
 
     bridge_ADDR_READ : begin
       o_ARREADY = 1'b1;
@@ -151,8 +160,9 @@ always_comb begin : p_fsm_comb
       o_SAMPLE_INDEX_ram = (index_cnt / size);
       o_RDATA = i_DATA_FROM_RAM;
       o_RID = trans_id;
-      if ((index_cnt/size) == length) begin
+      if ((data_in_burst_cnt/size) == length) begin
         next_state = bridge_READ_LAST;
+        cnt_clr = 1'b1;//
       end
       else if (i_RREADY) begin
         cnt_en = 1'b1;

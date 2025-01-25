@@ -25,12 +25,16 @@ VERILOG_SOURCES += $(PWD)/../twidle_fac_gen.sv
 VERILOG_SOURCES += $(PWD)/../top_fft.sv
 VERILOG_SOURCES += $(PWD)/../top_axi_lite.sv
 VERILOG_SOURCES += $(PWD)/../top_fft_tb.sv
-
+dump = dump.vcd
 
 
 # Debug: pokaż zmienną PYTHONPATH
 sim:
 	@echo "PYTHONPATH=$(PYTHONPATH)"
+gtkwave:
+	@gtkwave $(dump) dump.gtkw
+
+all: sim gtkwave
 
 # Automatyczna konfiguracja Makefile Cocotb
 include $(shell cocotb-config --makefiles)/Makefile.sim

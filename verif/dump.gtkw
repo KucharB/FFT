@@ -1,35 +1,57 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Mon Jan 20 20:26:06 2025
+[*] Fri Jan 24 23:56:15 2025
 [*]
 [dumpfile] "/home/bartek/Documents/sem2/GIT/FFT/verif/dump.vcd"
-[dumpfile_mtime] "Mon Jan 20 20:25:25 2025"
-[dumpfile_size] 4582
+[dumpfile_mtime] "Fri Jan 24 23:55:49 2025"
+[dumpfile_size] 52148
 [savefile] "/home/bartek/Documents/sem2/GIT/FFT/verif/dump.gtkw"
 [timestart] 0
-[size] 1920 1153
+[size] 1600 813
 [pos] -1 -1
-*-14.400000 47800 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-20.100000 2960000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] top_axi_lite.
 [sst_width] 239
-[signals_width] 206
+[signals_width] 222
 [sst_expanded] 1
-[sst_vpaned_height] 351
-@22
-top_axi_lite.slave.i_AWADDR[11:0]
+[sst_vpaned_height] 233
+@24
+top_axi_lite.AWADDR[11:0]
 @28
-top_axi_lite.slave.i_AWVALID
+top_axi_lite.AWBURST[1:0]
+top_axi_lite.AWID[1:0]
 @22
-top_axi_lite.slave.i_WDATA[15:0]
+top_axi_lite.AWLEN[7:0]
 @28
-top_axi_lite.slave.i_WLAST
-top_axi_lite.slave.o_AWREADY
-top_axi_lite.slave.i_BREADY
-top_axi_lite.slave.o_BVALID
-top_axi_lite.slave.i_WSTRB[1:0]
+top_axi_lite.AWREADY
+top_axi_lite.AWSIZE[2:0]
+top_axi_lite.AWVALID
+top_axi_lite.WLAST
+top_axi_lite.WREADY
+top_axi_lite.WVALID
 @22
-top_axi_lite.slave.i_SAMPLES_NUMBER[11:0]
-@23
+top_axi_lite.WDATA[15:0]
+@28
+top_axi_lite.BVALID
+top_axi_lite.BREADY
+top_axi_lite.WREADY
+top_axi_lite.slave.state[2:0]
+@22
+top_axi_lite.ram1.axi_data_in[15:0]
+@24
+top_axi_lite.ram1.axi_adr_in[11:0]
+top_axi_lite.slave.length[7:0]
 top_axi_lite.slave.index_cnt[11:0]
+top_axi_lite.slave.size[2:0]
+top_axi_lite.slave.data_in_burst_cnt[11:0]
+top_axi_lite.ARADDR[11:0]
+@22
+top_axi_lite.RDATA[31:0]
+@24
+top_axi_lite.ram1.axi_adr_in[11:0]
+@22
+top_axi_lite.ram1.axi_data_out[31:0]
+@24
+top_axi_lite.slave.o_SAMPLE_INDEX_ram[11:0]
 [pattern_trace] 1
 [pattern_trace] 0

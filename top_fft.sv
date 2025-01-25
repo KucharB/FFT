@@ -13,21 +13,50 @@
 
 module top_fft #(parameter N = 2)(
     // AXI BUS
-    input               [31:0]  RDATA,
-    input                       RVALID,
-    output logic                RREADY,
-    output logic        [N-1:0] RBURST,
-    output logic        [15:0]  WDATA,
-    output logic                WVALID,
-    input logic                 WREADY,
-    output logic        [N-1:0] WBURST,
 
+    input logic clk,
+    input logic n_Reset,
+    input logic [15:0]  WDATA,
+    input logic [1:0] WSTRB,
+    input logic WVALID,
+    input logic WLAST,
+    output logic WREADY,
 
+    input logic RREADY,
+    output logic [DATA_WIDTH-1:0] RDATA,
+    output logic [ID_R_WIDTH-1:0] RID,
+    output logic RVALID,
+    output logic RLAST,
+
+    input logic [11:0] AWADDR,
+    input logic [7:0] AWLEN,
+    input logic [2:0] AWSIZE,
+    input logic [1:0] AWBURST,
+    input logic [ID_W_WIDTH-1:0] AWID,
+    input logic AWVALID,
+    output logic AWREADY,
+
+    input logic [11:0] ARADDR,
+    input logic [7:0] ARLEN,
+    input logic [2:0] ARSIZE,
+    input logic [1:0] ARBURST,
+    input logic [ID_R_WIDTH-1:0] ARID,
+    input logic ARVALID,
+    input logic ARREADY,
+    input logic BREADY,
+    output logic BVALID,
+    output logic [ID_W_WIDTH-1:0] BID,
+
+    
+    input logic [11:0] SAMP_NUMBER,
     input [11:0] SAMP_NUMBER,
     input clk,
     input MAC_nRADIX,
     input n_Reset
 );
+    parameter DATA_WIDTH = 32;
+    parameter ID_W_WIDTH = 2; //obczaic szerokosc
+    parameter ID_R_WIDTH = 2;
 
 
 logic [15:0] CACHE_DATA_IN;
@@ -59,14 +88,53 @@ logic LOADED_DATA;
 logic ram_to_cache;
 logic [1:0] fsm_state;
 
-Axi_Bridge slave(.i_clk(clk), .i_rstn(n_Reset), .i_AWDATA(WDATA),
-        .i_DATA_FROM_RAM(DATA_FROM_RAM), .i_AWVALID(WVALID), .i_ARREADY(RREADY),
-        .i_CALC_END(CALC_END), .i_SAMPLES_NUMBER(SAMP_NUMBER),
-        .o_AWREADY(WREADY), .o_ARVALID(RVALID), .o_DATA_LOADED(LOADED_DATA), 
-        .o_ARDATA(RDATA), .o_SAMPLE_ram(RAM_in_axi), .o_AWBURST(WBURST), 
-        .o_ARBURST(RBURST), .o_SAMPLE_INDEX_ram(SAMPLE_INDEX_ram),
-        .o_WRITE_ram(WRITE_ram), .o_READ_ram(READ_ram)
-);
+Axi_Bridge #(.DATA_WIDTH(DATA_WIDTH), .ID_W_WIDTH(ID_W_WIDTH), .ID_R_WIDTH(ID_R_WIDTH))
+slave
+(
+    .i_clk(clk), .i_rstn(n_Reset),
+    // WRITE DATA CHANNEL
+    .i_WDATA(WDATA),
+    .i_WSTRB(WSTRB),
+    .i_WVALID(WVALID), 
+    .i_WLAST(WLAST),
+    .o_WREADY(WREADY),
+    // READ DATA CHANNEL
+    .i_RREADY(RREADY),
+    .o_RDATA(RDATA),
+    .o_RID(RID),
+    .o_RVALID(RVALID), 
+    .o_RLAST(RLAST),
+    // ADDRESS WRITE CHANNEL
+    .i_AWADDR(AWADDR),
+    .i_AWLEN(AWLEN),
+    .i_AWSIZE(AWSIZE),
+    .i_AWBURST(AWBURST),
+    .i_AWID(AWID),
+    .i_AWVALID(AWVALID),
+    .o_AWREADY(AWREADY),
+    // ADDRESS READ CHANNEL
+    .i_ARADDR(ARADDR),
+    .i_ARLEN(ARLEN),
+    .i_ARSIZE(ARSIZE),
+    .i_ARBURST(ARBURST),
+    .i_ARID(ARID),
+    .i_ARVALID(ARVALID),
+    .o_ARREADY(ARREADY),
+    // RESPONSE CHANNEL
+    .i_BREADY(BREADY),
+    .o_BVALID(BVALID),
+    .o_BID(BID),
+    // REST OF SIGNALS
+    .i_DATA_FROM_RAM(DATA_FROM_RAM),
+    .i_CALC_END(CALC_END),
+    .i_SAMPLES_NUMBER(SAMP_NUMBER),
+    .o_DATA_LOADED(LOADED_DATA),
+    .o_SAMPLE_ram(RAM_in_axi),
+    .o_SAMPLE_INDEX_ram(SAMPLE_INDEX_ram),
+    .o_WRITE_ram(WRITE_ram), 
+    .o_READ_ram(READ_ram)
+    //._fsm current_state // - ZAKOMENTOWAC
+); 
 
 RAM ram1(
         .axi_data_in(RAM_in_axi), 

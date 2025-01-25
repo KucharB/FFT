@@ -59,9 +59,9 @@ class AxiLiteDriver:
     await RisingEdge(self.clk)
     self.dut.BREADY.value = 0
     #while self.dut.WREADY.value == 0:
-    #  await RisingEdge(self.clk)
-    self.dut.WVALID.value = 0
-    self.dut.WLAST.value = 0
+      #await RisingEdge(self.clk)
+    #self.dut.WVALID.value = 0
+    #self.dut.WLAST.value = 0
 
   async def read(self, addr, burst_len = 0, burst_size = 1):
     self.dut.ARLEN.value = burst_len
