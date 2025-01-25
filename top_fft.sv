@@ -49,10 +49,7 @@ module top_fft #(parameter N = 2)(
 
     
     input logic [11:0] SAMP_NUMBER,
-    input [11:0] SAMP_NUMBER,
-    input clk,
-    input MAC_nRADIX,
-    input n_Reset
+    input MAC_nRADIX
 );
     parameter DATA_WIDTH = 32;
     parameter ID_W_WIDTH = 2; //obczaic szerokosc
