@@ -120,8 +120,9 @@ always_comb begin : p_fsm_comb
       o_WRITE_ram = 1'b1;
       o_SAMPLE_INDEX_ram = (index_cnt / size);
       o_SAMPLE_ram = i_WDATA;
-      if((data_in_burst_cnt/size) == length) begin//
+      if (o_SAMPLE_INDEX_ram == i_SAMPLES_NUMBER - 1)
         o_DATA_LOADED = 1'b1; 
+      if((data_in_burst_cnt/size) == length) begin//
         next_state = bridge_WRITE_RESPONSE;
         cnt_clr = 1'b1;
       end

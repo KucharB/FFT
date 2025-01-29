@@ -18,8 +18,8 @@ from verif.generator import Generator
 
 @cocotb.test()
 async def test_axi_lite(dut):
-  __input_samp_num__ = 128
-  __input_burst_num__ = 32
+  __input_samp_num__ = 1024
+  __input_burst_num__ = 64
 
   """Test for AXI4-Lite"""
   clock = Clock(dut.clk, 10, units="ns")

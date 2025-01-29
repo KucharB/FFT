@@ -42,7 +42,7 @@ module top_fft #(parameter N = 2)(
     input logic [1:0] ARBURST,
     input logic [ID_R_WIDTH-1:0] ARID,
     input logic ARVALID,
-    input logic ARREADY,
+    output logic ARREADY,
     input logic BREADY,
     output logic BVALID,
     output logic [ID_W_WIDTH-1:0] BID,

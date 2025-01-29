@@ -18,25 +18,43 @@ from verif.generator import Generator
 
 @cocotb.test()
 async def test_mac(dut):
+    __input_samp_num__ = 1024
+    __input_burst_num__ = 64
+
     clock = Clock(dut.clk, 10, units='ns')
     cocotb.start_soon(clock.start())
     driver = AxiLiteDriver(dut, dut.clk)
     monitor = AxiLiteMonitor(dut, dut.clk)
+    generator = Generator()
     cocotb.start_soon(monitor.monitor())
+    data_to_write = generator.generate(__input_samp_num__)
+    data_to_write_under_lists = [data_to_write[i:i + __input_burst_num__] for i in range(0,len(data_to_write), __input_burst_num__)]
+    dut.SAMP_NUMBER.value = __input_samp_num__
 
     dut.WVALID.value = 0
     dut.RREADY.value = 0
     dut.n_Reset.value = 0
     dut.MAC_nRADIX.value = 1
-    data_to_write = [0x0073, 0x0119, 0x019A, 0x01FE]
-    dut.SAMP_NUMBER = len(data_to_write)
     await RisingEdge(dut.clk)
     await RisingEdge(dut.clk)
     dut.n_Reset.value = 1
     await RisingEdge(dut.clk)
-    await driver.write(data_to_write)
-    dut.RREADY.value = 1
-    await Timer(400, units="ns")
+    for i, data_to_write_under_list in enumerate(data_to_write_under_lists):
+        address = int((i * __input_burst_num__ * 4)/2)
+        await driver.write(address, data_to_write_under_list, 0x3, __input_burst_num__-1, 1)
+        await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    data1 = []
+    for i, data_to_write_under_list in enumerate(data_to_write_under_lists):
+        address = int((i * __input_burst_num__ * 4)/2)
+        data = await driver.read(address, __input_burst_num__-1, 1)
+        data1.append(data)
+    print("Data get by driver", [hex(value) for sublist in data1 for value in sublist])    
+    await Timer(40, units="ns")
+
+
+    print("Test ended sucessfully")
 
 
 
