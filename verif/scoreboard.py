@@ -29,17 +29,62 @@ class Scoreboard:
       print("All outputs are correct!")
     else:
       print(f"{self.errors} errors detected")
+
   def compute_and_compare_fft(self, input_data, reference_data):
-    data = [(x - (1 <<15)) / (2**15 - 1) for x in input_data]
+    # Normalize input data
+    data = [(x - (1 << 15)) / (2**15 - 1) for x in input_data]
+    print(data)
+    # Compute FFT
     computed_fft = fft(data)
     
-    # Jeśli dane referencyjne są w postaci rzeczywistej, bierzemy moduł
-    if np.isrealobj(reference_data):
-        computed_fft = np.abs(computed_fft)
+    # Take the magnitude of the FFT if reference data is real
+    computed_fft = np.abs(computed_fft)
+    print("Computed FFT (complex numbers):")
+    for idx, value in enumerate(computed_fft):
+        print(f"Index {idx}: {value.real:.6f} + {value.imag:.6f}j")
     
-    comparison = np.allclose(computed_fft, reference_data, atol=1e-6)
+    # Flatten the computed FFT
+    computed_fft = computed_fft.flatten()
     
-    return computed_fft, comparison
+    comparisons = []
+
+    print("Length of computed FFT:", len(computed_fft))
+    
+    for ref in reference_data:
+        # Initialize list to store complex numbers
+        ref_complex = []
+        
+        # Extract real and imaginary parts from each 32-bit value in the reference data
+        for value in ref:
+            real_part = (value >> 16) & 0xFFFF  # Extract the upper 16 bits (real part)
+            imag_part = value & 0xFFFF  # Extract the lower 16 bits (imaginary part)
+
+            # Convert the parts to signed integers (16-bit signed integers)
+            if real_part >= 0x8000:
+                real_part -= 0x10000  # Convert to signed 16-bit
+            if imag_part >= 0x8000:
+                imag_part -= 0x10000  # Convert to signed 16-bit
+            
+            # Construct complex number from real and imaginary parts
+            ref_complex.append(real_part + 1j * imag_part)
+        
+        # Take the magnitude of the reference data's complex numbers
+        ref_complex = np.abs(ref_complex)
+
+        # Flatten the reference data for comparison
+        ref_flattened = np.array(ref_complex).flatten()
+        print(ref_flattened)
+        ref_flattened = ref_flattened[:8]
+        
+        #print("Length of reference data (flattened):", len(ref_flattened))
+
+        # Compare computed FFT with each reference data
+        if len(computed_fft) != len(ref_flattened):
+            print("ERROR: Mismatched sizes. FFT length:", len(computed_fft), "Reference length:", len(ref_flattened))
+        
+        comparisons.append(np.allclose(computed_fft, ref_flattened, atol=1e-6))
+    
+    return computed_fft, reference_data, comparisons
 
 class AxiScoreboard:
   def __init__(self):
