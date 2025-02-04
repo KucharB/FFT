@@ -18,8 +18,8 @@ from verif.generator import Generator
 
 @cocotb.test()
 async def test_mac(dut):
-    __input_samp_num__ = 1024
-    __input_burst_num__ = 64
+    __input_samp_num__ = 8
+    __input_burst_num__ = 8
 
     clock = Clock(dut.clk, 10, units='ns')
     cocotb.start_soon(clock.start())

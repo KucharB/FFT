@@ -100,12 +100,13 @@ always_comb begin : p_fsm_comb
     bridge_IDLE : begin
       next_state = bridge_IDLE;
       o_AWREADY = 1'b1;
-      o_ARREADY = 1'b1;//
+      //o_ARREADY = 1'b1;//
       if(i_AWVALID) begin
         next_state = bridge_ADDR_WRITE;
       end
       if(i_CALC_END && i_ARVALID) begin//
        next_state = bridge_ADDR_READ;//
+       o_ARREADY = 1'b1;//
      end
     end
 

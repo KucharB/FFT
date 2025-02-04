@@ -1,6 +1,8 @@
 #verif/scoreboard.py
 import os
 import sys
+import numpy as np
+from scipy.fft import fft
 
 # Ustalanie folderu wyżej jako ścieżki i zapis do zmiennej 
 parent_path = os.path.abspath(os.path.join(os.path.dirname(__file__),".."))
@@ -27,6 +29,17 @@ class Scoreboard:
       print("All outputs are correct!")
     else:
       print(f"{self.errors} errors detected")
+  def compute_and_compare_fft(self, input_data, reference_data):
+    data = [(x - (1 <<15)) / (2**15 - 1) for x in input_data]
+    computed_fft = fft(data)
+    
+    # Jeśli dane referencyjne są w postaci rzeczywistej, bierzemy moduł
+    if np.isrealobj(reference_data):
+        computed_fft = np.abs(computed_fft)
+    
+    comparison = np.allclose(computed_fft, reference_data, atol=1e-6)
+    
+    return computed_fft, comparison
 
 class AxiScoreboard:
   def __init__(self):
