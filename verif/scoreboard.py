@@ -143,3 +143,124 @@ class AxiScoreboard:
       print(f"AXI Scoreboard: {self.errors} errors detected.")
       for error in self.error_log:
         print(error)
+
+class FftRadix4Scoreboard:
+    """
+    Klasa scoreboardu do weryfikacji wyjść z FFT radix-4 (lub dowolnej FFT)
+    w porównaniu z modelem referencyjnym opartym o numpy.fft.
+
+    Założenia:
+      - Liczba próbek: 4096 (ale można dostosować parametrem).
+      - Dane wejściowe: 16-bit int (część rzeczywista) + 16-bit int (część urojona),
+        pakowane w jeden 32-bitowy 'word'.
+      - Dane wyjściowe: również 16+16 bit w jednym 32-bitowym słowie.
+      - Raportowanie procentu błędnych bitów.
+      - Zakładamy block processing (najpierw wprowadzamy cały blok, potem odbieramy cały blok).
+      - Brak rozróżnienia na potokowanie (pipeline latencje) – scoreboard otrzymuje
+        cały zestaw wyjść DUT po przetworzeniu całego bloku.
+    """
+
+    def __init__(self, num_samples=4096):
+        self.num_samples = num_samples
+        
+        # Przechowywane wewnętrznie listy wejść i oczekiwanych wyjść (referencja).
+        self._input_data = []
+        self._ref_output_data = []
+
+        # Przechowywane na potrzeby statystyk i porównania:
+        self.bit_errors = 0
+        self.total_bits_checked = 0
+
+    def add_input_samples(self, samples):
+        """
+        samples: lista (lub iterowalny obiekt) 32-bitowych słów,
+                 gdzie 16 bitów to część rzeczywista, 16 bitów to część urojona.
+                 Format (real, imag) = (lower 16 bits, upper 16 bits) lub odwrotnie –
+                 zależnie od ustaleń. Tutaj przykładowo przyjmujemy
+                 lower 16 bits = real, upper 16 bits = imag (little-endian).
+        """
+        if len(samples) != self.num_samples:
+            print(f"WARNING: Otrzymano {len(samples)} próbek, "
+                  f"a w założeniach jest {self.num_samples}.")
+        self._input_data = samples
+
+    def run_reference_model(self):
+        """
+        Uruchamia model referencyjny (numpy.fft) na danych wejściowych,
+        a następnie konwertuje wynik do formatu 16+16 bit fixed-point.
+        """
+        # 1. Konwersja z 32-bitowego "słowa" do par liczb 16-bitowych (real, imag).
+        real_samples = []
+        imag_samples = []
+
+        for word in self._input_data:
+            # W Pythonie maskujemy i przesuwamy, by wyłuskać real/imag:
+            real_16 = np.int16(word & 0xFFFF)        # dolne 16 bitów
+            imag_16 = np.int16((word >> 16) & 0xFFFF) # górne 16 bitów
+            real_samples.append(real_16)
+            imag_samples.append(imag_16)
+
+        # 2. Łączymy real i imag w liczby zespolone typu float (dla numpy.fft).
+        complex_input = np.array(real_samples, dtype=np.float32) \
+                        + 1j * np.array(imag_samples, dtype=np.float32)
+
+        # 3. Wywołujemy FFT z numpy (uwaga: numpy domyślnie używa DFT):
+        fft_result = np.fft.fft(complex_input, n=self.num_samples)
+
+        # 4. Konwersja wyników na 16+16 bit.
+        #    Tu jest miejsce na skalowanie, zaokrąglanie, saturację itp.
+        #    Zakładamy proste zaokrąglenie do int16.
+        ref_output_data = []
+        for val in fft_result:
+            real_val = val.real
+            imag_val = val.imag
+
+            # Ewentualne skalowanie (jeśli wymagane), np. / self.num_samples
+            # Tutaj przykład bez skalowania, jedynie konwersja do int16:
+            real_i16 = np.int16(np.round(real_val))
+            imag_i16 = np.int16(np.round(imag_val))
+
+            # Składamy 16-bit real i 16-bit imag w jedno 32-bit słowo:
+            # real = lower 16 bits, imag = upper 16 bits
+            out_word = (np.uint32(imag_i16 & 0xFFFF) << 16) | (np.uint32(real_i16 & 0xFFFF))
+            ref_output_data.append(out_word)
+
+        self._ref_output_data = ref_output_data
+
+    def compare_to_dut_output(self, dut_output_data):
+        """
+        Otrzymuje listę 32-bitowych wyjść z DUT (również 16 bitów real + 16 bitów imag),
+        i porównuje z _ref_output_data bit-po-bicie.
+        """
+        if len(dut_output_data) != len(self._ref_output_data):
+            print(f"WARNING: Liczba wyjść DUT ({len(dut_output_data)}) "
+                  f"różni się od liczby wyjść modelu ({len(self._ref_output_data)}).")
+
+        # Porównujemy do najmniejszej wspólnej długości:
+        compare_len = min(len(dut_output_data), len(self._ref_output_data))
+
+        for i in range(compare_len):
+            ref_word = self._ref_output_data[i]
+            dut_word = dut_output_data[i]
+
+            # Teraz sprawdzamy każdy z 32 bitów:
+            diff = ref_word ^ dut_word  # bitwise XOR – bity różne dadzą '1'
+            # Liczymy ile bitów się różni:
+            bit_diff_count = bin(diff).count('1')
+
+            self.bit_errors += bit_diff_count
+            self.total_bits_checked += 32  # porównujemy 32 bity na próbkę
+
+    def report(self):
+        """
+        Końcowa statystyka: procent błędnych bitów.
+        """
+        if self.total_bits_checked == 0:
+            print("Brak porównań – nie można wyliczyć statystyk.")
+            return
+
+        error_percent = (self.bit_errors / self.total_bits_checked) * 100.0
+        print(f"[FFT Radix-4 Scoreboard] Liczba sprawdzonych bitów: {self.total_bits_checked}")
+        print(f"[FFT Radix-4 Scoreboard] Liczba błędnych bitów:   {self.bit_errors}")
+        print(f"[FFT Radix-4 Scoreboard] Procent błędnych bitów: {error_percent:.4f}%")
+  
