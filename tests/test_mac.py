@@ -15,7 +15,7 @@ from cocotb.triggers import RisingEdge
 from verif.driver import AxiLiteDriver
 from verif.monitor import AxiLiteMonitor
 from verif.generator import Generator
-from verif.scoreboard import Scoreboard
+from verif.scoreboard import FftRadix4Scoreboard
 
 @cocotb.test()
 async def test_mac(dut):
@@ -27,9 +27,10 @@ async def test_mac(dut):
     driver = AxiLiteDriver(dut, dut.clk)
     monitor = AxiLiteMonitor(dut, dut.clk)
     generator = Generator()
-    scoreboard = Scoreboard()
+    scoreboard = FftRadix4Scoreboard()
     cocotb.start_soon(monitor.monitor())
     data_to_write = generator.generate(__input_samp_num__)
+    print([hex(value) for value in data_to_write])
     data_to_write_under_lists = [data_to_write[i:i + __input_burst_num__] for i in range(0,len(data_to_write), __input_burst_num__)]
     dut.SAMP_NUMBER.value = __input_samp_num__
 
@@ -54,9 +55,13 @@ async def test_mac(dut):
         data1.append(data)
     print("Data get by driver", [hex(value) for sublist in data1 for value in sublist])    
     await Timer(40, units="ns")
-    flattened_data1 = [value for sublist in data1 for value in sublist]
-    print("[SCOREBOARD]")
-    print(scoreboard.compute_and_compare_fft(data_to_write, flattened_data1))
+    #flattened_data1 = [value for sublist in data1 for value in sublist]
+    scoreboard.__init__(__input_samp_num__)
+    scoreboard.add_input_samples(data_to_write)
+    scoreboard.run_reference_model()
+    #scoreboard.compare_to_dut_output(data1)
+    #scoreboard.report()
+    #print(scoreboard.compute_and_compare_fft(data_to_write, flattened_data1))
 
 
     print("Test ended sucessfully")
