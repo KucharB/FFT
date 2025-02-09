@@ -26,7 +26,7 @@ async def test_axi_lite(dut):
   cocotb.start_soon(clock.start())
 
   driver = AxiLiteDriver(dut, dut.clk)
-  monitor = AxiLiteMonitor(dut, dut.clk)
+  monitor = AxiLiteMonitor(dut, dut.clk) #
   generator = Generator()
   cocotb.start_soon(monitor.monitor())
   random_val = generator.generate(__input_samp_num__)
@@ -61,3 +61,5 @@ async def test_axi_lite(dut):
   #assert data2 == 0xBABE, f"Expected 0xBABE, got {data2}"
 
   print("Test ended sucessfully")
+
+  # spoko, wszystko co trzeba jest w teście, szkoda, że nie są używane Monitor i Driver jako bazowe z cocotb
