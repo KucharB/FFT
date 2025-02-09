@@ -25,6 +25,7 @@ class Generator:
     for value in data:
         fixed_point = int(numpy.round(value * scale))
         if fixed_point < 0:
+            # cocotb obsługuje signed, nie ma potrzeby robienia takich rzeczy
             fixed_point = (1 << 16) + fixed_point
         fixed_point_values.append(fixed_point)
 
