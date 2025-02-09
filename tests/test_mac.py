@@ -55,13 +55,11 @@ async def test_mac(dut):
         data1.append(data)
     print("Data get by driver", [hex(value) for sublist in data1 for value in sublist])    
     await Timer(40, units="ns")
-    #flattened_data1 = [value for sublist in data1 for value in sublist]
     scoreboard.__init__(__input_samp_num__)
     scoreboard.add_input_samples(data_to_write)
     scoreboard.run_reference_model()
-    #scoreboard.compare_to_dut_output(data1)
-    #scoreboard.report()
-    #print(scoreboard.compute_and_compare_fft(data_to_write, flattened_data1))
+    scoreboard.compare_to_dut_output(data1)
+ 
 
 
     print("Test ended sucessfully")

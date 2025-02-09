@@ -3,6 +3,7 @@ import os
 import sys
 import numpy as np
 from scipy.fft import fft
+import matplotlib.pyplot as plt
 
 # Ustalanie folderu wyżej jako ścieżki i zapis do zmiennej 
 parent_path = os.path.abspath(os.path.join(os.path.dirname(__file__),".."))
@@ -29,63 +30,6 @@ class Scoreboard:
       print("All outputs are correct!")
     else:
       print(f"{self.errors} errors detected")
-
-  def compute_and_compare_fft(self, input_data, reference_data):
-    # Normalize input data
-    data = [(x - (1 << 15)) / (2**15 - 1) for x in input_data]
-    print(data)
-    # Compute FFT
-    computed_fft = fft(data)
-    
-    # Take the magnitude of the FFT if reference data is real
-    computed_fft = np.abs(computed_fft)
-    print("Computed FFT (complex numbers):")
-    for idx, value in enumerate(computed_fft):
-        print(f"Index {idx}: {value.real:.6f} + {value.imag:.6f}j")
-    
-    # Flatten the computed FFT
-    computed_fft = computed_fft.flatten()
-    
-    comparisons = []
-
-    print("Length of computed FFT:", len(computed_fft))
-    
-    for ref in reference_data:
-        # Initialize list to store complex numbers
-        ref_complex = []
-        
-        # Extract real and imaginary parts from each 32-bit value in the reference data
-        for value in ref:
-            real_part = (value >> 16) & 0xFFFF  # Extract the upper 16 bits (real part)
-            imag_part = value & 0xFFFF  # Extract the lower 16 bits (imaginary part)
-
-            # Convert the parts to signed integers (16-bit signed integers)
-            if real_part >= 0x8000:
-                real_part -= 0x10000  # Convert to signed 16-bit
-            if imag_part >= 0x8000:
-                imag_part -= 0x10000  # Convert to signed 16-bit
-            
-            # Construct complex number from real and imaginary parts
-            ref_complex.append(real_part + 1j * imag_part)
-        
-        # Take the magnitude of the reference data's complex numbers
-        ref_complex = np.abs(ref_complex)
-
-        # Flatten the reference data for comparison
-        ref_flattened = np.array(ref_complex).flatten()
-        print(ref_flattened)
-        ref_flattened = ref_flattened[:8]
-        
-        #print("Length of reference data (flattened):", len(ref_flattened))
-
-        # Compare computed FFT with each reference data
-        if len(computed_fft) != len(ref_flattened):
-            print("ERROR: Mismatched sizes. FFT length:", len(computed_fft), "Reference length:", len(ref_flattened))
-        
-        comparisons.append(np.allclose(computed_fft, ref_flattened, atol=1e-6))
-    
-    return computed_fft, reference_data, comparisons
-
 
 
 class FftRadix4Scoreboard:
@@ -116,13 +60,7 @@ class FftRadix4Scoreboard:
         self.total_bits_checked = 0
 
     def add_input_samples(self, samples):
-        """
-        samples: lista (lub iterowalny obiekt) 32-bitowych słów,
-                 gdzie 16 bitów to część rzeczywista, 16 bitów to część urojona.
-                 Format (real, imag) = (lower 16 bits, upper 16 bits) lub odwrotnie –
-                 zależnie od ustaleń. Tutaj przykładowo przyjmujemy
-                 lower 16 bits = real, upper 16 bits = imag (little-endian).
-        """
+        
         if len(samples) != self.num_samples:
             print(f"WARNING: Otrzymano {len(samples)} próbek, "
                   f"a w założeniach jest {self.num_samples}.")
@@ -134,45 +72,58 @@ class FftRadix4Scoreboard:
         """
         
         data = [(x if x < (1 << 15) else x - (1 << 16)) / (2**15) for x in self._input_data]
- 
-
         fft_ = np.fft.fft(data)
+        print(fft_)
         self._ref_output_data = fft_
 
     def compare_to_dut_output(self, dut_output_data):
-        """
-        Otrzymuje listę 32-bitowych wyjść z DUT (również 16 bitów real + 16 bitów imag),
-        i porównuje z _ref_output_data bit-po-bicie.
-        """
-        if len(dut_output_data) != len(self._ref_output_data):
-            print(f"WARNING: Liczba wyjść DUT ({len(dut_output_data)}) "
-                  f"różni się od liczby wyjść modelu ({len(self._ref_output_data)}).")
-
-        # Porównujemy do najmniejszej wspólnej długości:
-        compare_len = min(len(dut_output_data), len(self._ref_output_data))
-
-        for i in range(compare_len):
-            ref_word = self._ref_output_data[i]
-            dut_word = dut_output_data[i]
-
-            # Teraz sprawdzamy każdy z 32 bitów:
-            diff = ref_word ^ dut_word  # bitwise XOR – bity różne dadzą '1'
-            # Liczymy ile bitów się różni:
-            bit_diff_count = bin(diff).count('1')
-
-            self.bit_errors += bit_diff_count
-            self.total_bits_checked += 32  # porównujemy 32 bity na próbkę
-
-    def report(self):
-        """
-        Końcowa statystyka: procent błędnych bitów.
-        """
-        if self.total_bits_checked == 0:
-            print("Brak porównań – nie można wyliczyć statystyk.")
-            return
-
-        error_percent = (self.bit_errors / self.total_bits_checked) * 100.0
-        print(f"[FFT Radix-4 Scoreboard] Liczba sprawdzonych bitów: {self.total_bits_checked}")
-        print(f"[FFT Radix-4 Scoreboard] Liczba błędnych bitów:   {self.bit_errors}")
-        print(f"[FFT Radix-4 Scoreboard] Procent błędnych bitów: {error_percent:.4f}%")
+        
+        real_part = []
+        imag_part = []
+        for sublist in dut_output_data:
+            for value in sublist:
+              real_part.append((value >> 16) & 0xFFFF) 
+              imag_part.append(value & 0xFFFF)
+        reals = np.array([(x if x < (1 << 15) else x - (1 << 16)) / (2**15) for x in real_part])
+        imags = np.array([(x if x < (1 << 15) else x - (1 << 16)) / (2**15) for x in imag_part])
   
+        dut_complex = reals + 1j * imags
+        ref_complex = np.array(self._ref_output_data)  
+    
+        error = np.abs(dut_complex - ref_complex)  
+        mse = np.mean(error ** 2)  
+        mae = np.mean(error)  
+        max_error = np.max(error)  
+    
+        # --- WIZUALIZACJA ---
+        fig, axs = plt.subplots(2, 1, figsize=(10, 8))
+    
+        # Wykres wartości zespolonych (moduł)
+        axs[0].plot(np.abs(ref_complex), label="Reference Output", linestyle="dashed", marker="o", markersize=3)
+        axs[0].plot(np.abs(dut_complex), label="DUT Output", linestyle="dashed", marker="x", markersize=3)
+        axs[0].set_title("Comparison of DUT vs Reference (Magnitude)")
+        axs[0].set_ylabel("Magnitude")
+        axs[0].legend()
+        axs[0].grid()
+    
+        # Wykres błędu
+        axs[1].plot(error, label="Error (|DUT - Reference|)", color="red", marker="x", markersize=3)
+        axs[1].set_title("Error between DUT and Reference")
+        axs[1].set_ylabel("Error Magnitude")
+        axs[1].set_xlabel("Sample Index")
+        axs[1].legend()
+        axs[1].grid()
+    
+        plt.tight_layout()
+        plt.savefig("fft_comparison.png")
+    
+        # Wypisanie wyników numerycznych
+        print("DUT Complex Output:", dut_complex)
+        print("Reference Complex Output:", ref_complex)
+        print(f"MSE: {mse:.6f}") #Mean Squared Error - średni błąd kwadratowy
+        print(f"MAE: {mae:.6f}") #Mean Absolute Error - średnia odchyła
+        print(f"Max Error: {max_error:.6f}") 
+    
+        return mse, mae, max_error  # Możesz zwrócić wartości, jeśli chcesz je dalej analizować
+
+    
