@@ -1,3 +1,5 @@
+// jeżeli coś jest tb, to powinno się tak nazywać. nie powinno być w jednym katalogu TB i RTL
+
 module top_axi_lite;
     parameter DATA_WIDTH = 32;
     parameter ID_W_WIDTH = 2; //obczaic szerokosc
