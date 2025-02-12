@@ -22,6 +22,8 @@ module RAM(
     );
  
  reg [31:0] MEM [0:4095];
+ logic [11:0] shifted_SEND_ADDR;
+ logic [11:0] shifted_shifted_SEND_ADDR;
  
 /*always @(posedge clk) begin
     if(mode) begin
@@ -35,6 +37,9 @@ module RAM(
         MEM[SEND_ADDR] <= SEND_DATA;
     end
  end   */
+
+ d_flip_flop d1(.clk(clk), .d(SEND_ADDR), .q(shifted_SEND_ADDR));
+ d_flip_flop d2(.clk(clk), .d(shifted_SEND_ADDR), .q(shifted_shifted_SEND_ADDR));
     
     always @(posedge clk) begin
     if(mode) begin
@@ -46,7 +51,10 @@ module RAM(
     else if(write_to_cache)
         READ_DATA <= MEM[READ_ADDRESS]; 
     else begin
-        MEM[SEND_ADDR] <= SEND_DATA;
+        MEM[shifted_shifted_SEND_ADDR] <= SEND_DATA;
     end
  end   
+
+
+
 endmodule

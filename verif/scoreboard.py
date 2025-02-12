@@ -73,7 +73,6 @@ class FftRadix4Scoreboard:
         
         data = [(x if x < (1 << 15) else x - (1 << 16)) / (2**15) for x in self._input_data]
         fft_ = np.fft.fft(data)
-        print(fft_)
         self._ref_output_data = fft_
 
     def compare_to_dut_output(self, dut_output_data):

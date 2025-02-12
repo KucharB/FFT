@@ -30,6 +30,7 @@ async def test_mac(dut):
     scoreboard = FftRadix4Scoreboard()
     cocotb.start_soon(monitor.monitor())
     data_to_write = generator.generate(__input_samp_num__)
+    print("Data to write", [hex(value) for value in data_to_write])
     print([hex(value) for value in data_to_write])
     data_to_write_under_lists = [data_to_write[i:i + __input_burst_num__] for i in range(0,len(data_to_write), __input_burst_num__)]
     dut.SAMP_NUMBER.value = __input_samp_num__
