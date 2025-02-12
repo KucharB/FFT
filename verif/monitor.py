@@ -41,17 +41,3 @@ class AxiLiteMonitor:
       else:
         await RisingEdge(self.clk)
 
-# czy ta funkcja jest gdzieś użyta?
-async def monitor_axi_transactions(monitor, scoreboard):
-  while True:
-    if monitor.dut.AWVALID.value and monitor.dut.AWREADY.value:
-      addr = int(monitor.dut.AWADDR.value)
-      data = int(monitor.dut.WDATA.value)
-      scoreboard.check_write(addr, data)
-
-    if monitor.dut.ARVALID.value and monitor.dut.ARREADY.value:
-      addr = int(monitor.dut.ARADR.value)
-      data = int(monitor.dut.RDATA.value)
-      scoreboard.check_read(addr, data)
-
-    await RisingEdge(monitor.clk)

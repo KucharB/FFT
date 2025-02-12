@@ -2,7 +2,7 @@ export PYTHONPATH := $(PWD):$(PWD)/../tests:$(PYTHONPATH)
 
 TOPLEVEL_LANG = verilog
 SIM = icarus
-#TOPLEVEL = top_axi_lite # Moduł top-level z pliku FFT
+#TOPLEVEL = top_axi_lite_tb # Moduł top-level z pliku FFT
 #MODULE = test_axi_lite  # Nazwa pliku testowego Python (bez .py)
 
 TOPLEVEL = top_fft_tb 
