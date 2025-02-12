@@ -35,7 +35,7 @@ async def test_mac(dut):
     data_to_write_under_lists = [data_to_write[i:i + __input_burst_num__] for i in range(0,len(data_to_write), __input_burst_num__)]
     dut.SAMP_NUMBER.value = __input_samp_num__
 
-    dut.WVALID.value = 0
+    dut.WVALID.value = 0 # dlaczego to jest potrzebne?
     dut.RREADY.value = 0
     dut.n_Reset.value = 0
     dut.MAC_nRADIX.value = 1

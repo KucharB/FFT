@@ -40,7 +40,7 @@ module Cache_memory(
     
 logic [11:0] shifted_write_adr;
 
-d_flip_flop d1(.clk(clk), .d(write_adr), .q(shifted_write_adr));
+    d_flip_flop d1(.clk(clk), .d(write_adr), .q(shifted_write_adr)); //dlaczego nie po prostu always?
 
 reg [15:0] MEM [0:4095];
 
