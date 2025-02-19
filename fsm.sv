@@ -24,6 +24,14 @@ localparam  LOAD_TO_CACHE  = 2'b01;
 localparam  CLEAR          = 2'b10;
 localparam  COMPUTE        = 2'b11;
 
+reg calc_end1;
+reg calc_end2;
+
+always_ff @(posedge clk) begin
+    calc_end1 <= calc_end;
+    calc_end2 <= calc_end1;
+end
+
 always_ff @(posedge clk) begin
 if (!nrst) begin
     states <= IDLE;
@@ -60,7 +68,7 @@ else if(ce)begin
             load_nCompute <= 1'b0;
         end
         COMPUTE: begin
-            if(calc_end) begin
+            if(calc_end2) begin
                 states <= IDLE;
                 load_nCompute <= 1'b1;
                 count_n_en <= 1'b0;

@@ -56,6 +56,14 @@ logic [2:0] size;
 logic [7:0] length;
 logic [ID_W_WIDTH-1:0] trans_id;
 
+reg i_CALC_END1;
+reg i_CALC_END2;
+
+always_ff @(posedge i_clk) begin
+    i_CALC_END1 <= i_CALC_END;
+    i_CALC_END2 <= i_CALC_END1;
+end
+
 // FSM
 always_ff @(posedge i_clk or negedge i_rstn) begin : p_fsm_sync
   if (~i_rstn) begin
@@ -104,7 +112,7 @@ always_comb begin : p_fsm_comb
       if(i_AWVALID) begin
         next_state = bridge_ADDR_WRITE;
       end
-      if(i_CALC_END && i_ARVALID) begin//
+      if(i_CALC_END2 && i_ARVALID) begin//
        next_state = bridge_ADDR_READ;//
        o_ARREADY = 1'b1;//
      end

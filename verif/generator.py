@@ -19,7 +19,7 @@ class Generator:
   def generate(self, samp_num):
     data = []
     for _ in range(samp_num):
-      data.append(self.random.uniform(-1,1)) 
+      data.append(self.random.uniform(-0.3,0.3)) 
     scale = 2**(16 - 1) - 1
     fixed_point_values = []
     for value in data:
