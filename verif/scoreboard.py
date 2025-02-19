@@ -122,7 +122,7 @@ class FftRadix4Scoreboard:
         print(f"MSE: {mse:.6f}") #Mean Squared Error - średni błąd kwadratowy
         print(f"MAE: {mae:.6f}") #Mean Absolute Error - średnia odchyła
         print(f"Max Error: {max_error:.6f}") 
-    
+        assert  mse <= 1, f"MSE is too big"
         return mse, mae, max_error  # Możesz zwrócić wartości, jeśli chcesz je dalej analizować
 
     
