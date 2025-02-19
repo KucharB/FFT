@@ -41,9 +41,9 @@ else if(ce)begin
                 clear <= 1'b1;
                 //
                 load_nCompute <= 1'b0;
+                load_to_cache <= 1'b1;
             end
         LOAD_TO_CACHE:begin
-        load_to_cache <= 1'b1;
         count_n_en <= 1'b1;
             if(data_to_cache_loaded) begin
                 states <= CLEAR;

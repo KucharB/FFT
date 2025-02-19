@@ -23,6 +23,6 @@ module Accumulation_unit(
         end
     end
 
-    always_comb val_out = {accumulated_val_real[16:0], accumulated_val_imag[16:0]};
+    always_comb val_out = {accumulated_val_real[15:0], accumulated_val_imag[15:0]};
 
 endmodule

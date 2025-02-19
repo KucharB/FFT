@@ -48,13 +48,13 @@ module RAM(
         end
         else if(axi_read) axi_data_out <= MEM[axi_adr_in];
     end
-    else if(write_to_cache)
+    else begin
+    if(write_to_cache)
         READ_DATA <= MEM[READ_ADDRESS]; 
     else begin
         MEM[shifted_shifted_SEND_ADDR] <= SEND_DATA;
     end
+    end
  end   
-
-
 
 endmodule

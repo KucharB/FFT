@@ -7,7 +7,10 @@ module MUL_UNIT(
     output logic [31:0] result
 );
 
-    always_comb begin
-        result = a_val * b_val;
+ logic signed [31:0] mul_res;
+
+   always_comb begin
+        mul_res = $signed(a_val) * $signed(b_val);
+        result = mul_res >>> 15;
     end
 endmodule
