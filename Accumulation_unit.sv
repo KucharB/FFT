@@ -10,10 +10,16 @@ module Accumulation_unit(
     );
     
     reg signed [18:0] accumulated_val_real; 
-    reg signed [18:0] accumulated_val_imag; 
+    reg signed [18:0] accumulated_val_imag;
+
+    reg reset;
+
+    always @(posedge clk) begin
+        reset <= nrst;
+    end
 
     always_ff @(posedge clk) begin
-        if (!nrst || (val_a == 0)) begin
+        if (!reset) begin
             accumulated_val_real <= 0;
             accumulated_val_imag <= 0;
         end

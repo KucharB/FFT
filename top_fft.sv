@@ -186,7 +186,7 @@ Accumulation_unit acumulation(
         .val_out(SEND_DATA),
         .clk(clk),
         .ce(counter_k_en),
-        .nrst(device_clear)
+        .nrst(device_clear & ~(counter_n_ovf))
 );
 
 counter n_counter(
