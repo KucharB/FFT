@@ -73,6 +73,8 @@ class FftRadix4Scoreboard:
         
         data = [(x if x < (1 << 15) else x - (1 << 16)) / (2**15) for x in self._input_data]
         fft_ = np.fft.fft(data)
+        for x in range(self.num_samples):
+          fft_[x] = fft_[x] / self.num_samples
         self._ref_output_data = fft_
 
     def compare_to_dut_output(self, dut_output_data):
@@ -122,7 +124,7 @@ class FftRadix4Scoreboard:
         print(f"MSE: {mse:.6f}") #Mean Squared Error - średni błąd kwadratowy
         print(f"MAE: {mae:.6f}") #Mean Absolute Error - średnia odchyła
         print(f"Max Error: {max_error:.6f}") 
-        assert  mse <= 1, f"MSE is too big"
+        assert  mse <= 0.002, f"MSE is too big"
         return mse, mae, max_error  # Możesz zwrócić wartości, jeśli chcesz je dalej analizować
 
     

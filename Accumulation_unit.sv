@@ -7,11 +7,15 @@ module Accumulation_unit(
     input clk,
     input ce,
     input nrst,
-    input load
+    input load,
+    input [11:0] samp_num
     );
     
-    reg signed [18:0] accumulated_val_real; 
-    reg signed [18:0] accumulated_val_imag;
+    reg signed [31:0] accumulated_val_real; 
+    reg signed [31:0] accumulated_val_imag;
+
+    logic signed [31:0] accumulated_val_real1;
+    logic signed [31:0] accumulated_val_imag1;
 
     reg reset;
     reg load1;
@@ -39,6 +43,10 @@ module Accumulation_unit(
         end
     end
 
-    always_comb val_out = {accumulated_val_real[15:0], accumulated_val_imag[15:0]};
+    always_comb begin
+    accumulated_val_real1 = accumulated_val_real >> $clog2(samp_num);
+    accumulated_val_imag1 = accumulated_val_imag >> $clog2(samp_num);
+    val_out = {accumulated_val_real1[15:0], accumulated_val_imag1[15:0]};
+    end
 
 endmodule
