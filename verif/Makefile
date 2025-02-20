@@ -23,7 +23,7 @@ VERILOG_SOURCES += $(PWD)/../counter.sv
 VERILOG_SOURCES += $(PWD)/../fsm.sv
 VERILOG_SOURCES += $(PWD)/../twidle_fac_gen.sv
 VERILOG_SOURCES += $(PWD)/../top_fft.sv
-VERILOG_SOURCES += $(PWD)/../top_axi_lite.sv
+VERILOG_SOURCES += $(PWD)/../top_axi_lite_tb.sv
 VERILOG_SOURCES += $(PWD)/../top_fft_tb.sv
 dump = dump.vcd
 

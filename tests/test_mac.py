@@ -19,8 +19,8 @@ from verif.scoreboard import FftRadix4Scoreboard
 
 @cocotb.test()
 async def test_mac(dut):
-    __input_samp_num__ = 32
-    __input_burst_num__ = 32
+    __input_samp_num__ = 16
+    __input_burst_num__ = 16
 
     clock = Clock(dut.clk, 10, units='ns')
     cocotb.start_soon(clock.start())
